@@ -1,0 +1,56 @@
+
+1. Aplicar Migrations - database update
+   Este comando aplica todas as migrações pendentes ao banco de dados.
+   
+   update-database
+   dotnet ef database update
+   
+2. Reverter Migrations - database update <MigrationName>
+   Para reverter para uma migration específica (anterior), use o nome da migration ou um identificador. Isso reverte o banco de dados para o estado da migration especificada.
+   
+   dotnet ef database update NomeDaMigration
+  
+   Se você quiser reverter todas as migrações, pode reverter para a primeira migration (ou para zero, que é o estado inicial, antes de qualquer migração):
+   
+   dotnet ef database update 0
+   
+3. Verificar Status das Migrations - migrations list
+   Este comando lista todas as migrations que foram aplicadas e as que estão pendentes.
+   
+   dotnet ef migrations list
+   
+4. Criar uma nova Migration - migrations add
+   Use este comando para criar uma nova migration que capture as mudanças no modelo de dados.
+   
+   dotnet ef migrations add NomeDaMigration
+   
+5. Remover a última Migration - migrations remove
+   Se você criou uma migration, mas ainda não a aplicou ao banco de dados, pode removê-la com o comando:
+   
+   dotnet ef migrations remove
+   
+6. Forçar a aplicação da Migration - --force
+   Se precisar forçar a aplicação de uma migration ou revertê-la (caso haja erro ou conflito), pode adicionar a opção --force.
+   
+   dotnet ef database update --force
+   
+7. Gerar o script SQL - script
+   Gera um script SQL com base nas migrations que podem ser aplicadas ao banco de dados. Isso é útil se você quiser revisar ou aplicar as mudanças manualmente.
+   
+   dotnet ef migrations script
+   
+
+Exemplos:
+Reverter o banco de dados para uma migration chamada "Inicial":
+
+    dotnet ef database update Inicial
+
+
+Reverter para o estado inicial (sem migrations aplicadas):
+
+    update-database 0
+    dotnet ef database update 0
+	
+	
+
+   
