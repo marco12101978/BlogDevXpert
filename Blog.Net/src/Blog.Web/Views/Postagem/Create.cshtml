@@ -1,0 +1,23 @@
+﻿@using Blog.Data.Models
+@model Postagem
+
+<h2>Criar Nova Postagem</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="Titulo"></label>
+        <input asp-for="Titulo" class="form-control" />
+        <span asp-validation-for="Titulo" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Conteudo"></label>
+        <textarea asp-for="Conteudo" class="form-control"></textarea>
+        <span asp-validation-for="Conteudo" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="IdAutor">Author</label>
+        <select asp-for="IdAutor" asp-items="@(new SelectList(ViewBag.Authors, "AuthorId", "Name"))" class="form-control"></select>
+        <span asp-validation-for="IdAutor" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Criar Post</button>
+</form>

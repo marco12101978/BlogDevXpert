@@ -1,0 +1,24 @@
+﻿@using Blog.Data.Models
+@model IEnumerable<Postagem>
+
+<h2>Postagens Recentes</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Título</th>
+            <th>Autor</th>
+            <th>Data</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var post in Model)
+        {
+            <tr>
+                <td>@post.Titulo</td>
+                <td>@post.Autor?.Nome</td>
+                <td>@post.DataCriacao.ToShortDateString()</td>
+            </tr>
+        }
+    </tbody>
+</table>
