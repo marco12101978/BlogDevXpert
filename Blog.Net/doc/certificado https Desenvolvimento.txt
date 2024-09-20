@@ -1,0 +1,24 @@
+
+Esses comandos são essenciais para configurar um ambiente de desenvolvimento seguro com HTTPS em aplicações ASP.NET Core.
+
+1. -> dotnet dev-certs https --check
+ obs. Verifica se um certificado de desenvolvimento HTTPS já existe e se está instalado corretamente.
+  Se o certificado estiver ausente ou inválido, uma mensagem será exibida.
+
+2. -> dotnet dev-certs https --clean
+ obs. Remove os certificados de desenvolvimento HTTPS que foram gerados anteriormente. 
+      Isso é útil se você quiser começar do zero, por exemplo, se houver problemas com o certificado atual.
+
+3. -> dotnet dev-certs https --check --trust
+ obs. Verifica a presença do certificado de desenvolvimento HTTPS e, se não estiver instalado ou confiável,
+      tenta configurar o certificado para ser confiável no seu sistema.
+	  Isso pode ser necessário para evitar avisos de segurança ao usar o HTTPS em desenvolvimento.
+
+4. -> dotnet dev-certs https
+ obs. Gera um novo certificado de desenvolvimento HTTPS.
+      Se já houver um certificado, ele pode ser reutilizado. Esse comando é o passo inicial para criar ou garantir que você tenha um certificado disponível.
+
+5. -> dotnet dev-certs https --trust
+ obs. Garante que o certificado de desenvolvimento HTTPS seja confiável.
+      Esse comando pode ser necessário em sistemas operacionais que não confiam automaticamente nos certificados gerados pelo .NET
+
