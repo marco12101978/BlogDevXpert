@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Blog.Data.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 
 namespace Blog.Web.Data
 {
@@ -9,5 +11,10 @@ namespace Blog.Web.Data
             : base(options)
         {
         }
+
+        //public DbSet<Post> Posts { get; set; }
+        //public DbSet<Author> Authors { get; set; }
+        //public DbSet<Comment> Comments { get; set; }
+
     }
 }
