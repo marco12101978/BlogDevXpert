@@ -11,10 +11,5 @@ namespace Blog.Web.Data
         {
 
         }
-
-        public DbSet<Postagem> Posts { get; set; }
-        public DbSet<Autor> Authors { get; set; }
-        public DbSet<Comentario> Comments { get; set; }
-
     }
 }

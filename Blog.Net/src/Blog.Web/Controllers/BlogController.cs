@@ -1,4 +1,5 @@
-﻿using Blog.Web.Data;
+﻿using Blog.Data.Context;
+using Blog.Web.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,9 +7,9 @@ namespace Blog.Web.Controllers
 {
     public class BlogController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly MeuDbContext _context;
 
-        public BlogController(ApplicationDbContext context)
+        public BlogController(MeuDbContext context)
         {
             _context = context;
         }

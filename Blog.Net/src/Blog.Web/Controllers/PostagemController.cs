@@ -1,4 +1,5 @@
-﻿using Blog.Data.Models;
+﻿using Blog.Data.Context;
+using Blog.Data.Models;
 using Blog.Web.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -7,9 +8,9 @@ namespace Blog.Web.Controllers
 {
     public class PostagemController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly MeuDbContext _context;
 
-        public PostagemController(ApplicationDbContext context)
+        public PostagemController(MeuDbContext context)
         {
             _context = context;
         }

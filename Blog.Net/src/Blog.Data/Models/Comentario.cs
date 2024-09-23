@@ -11,7 +11,7 @@ namespace Blog.Data.Models
     public class Comentario
     {
         [Key]
-        public int IdComentario { get; set; }
+        public Guid IdComentario { get; set; }
 
         [Required]
         [MaxLength(1000)]
@@ -25,7 +25,7 @@ namespace Blog.Data.Models
         public string NomeAutor { get; set; }
 
         [ForeignKey("Postagem")]
-        public int IdPostagem { get; set; }
+        public Guid IdPostagem { get; set; }
 
         public Postagem Postagem { get; set; }
     }

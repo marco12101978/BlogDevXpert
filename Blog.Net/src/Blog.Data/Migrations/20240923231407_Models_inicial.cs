@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Blog.Web.Data.Migrations
+namespace Blog.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class Models : Migration
+    public partial class Models_inicial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,8 +15,7 @@ namespace Blog.Web.Data.Migrations
                 name: "Authors",
                 columns: table => new
                 {
-                    IdAutor = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IdAutor = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Nome = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Biografia = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false)
@@ -30,13 +29,12 @@ namespace Blog.Web.Data.Migrations
                 name: "Posts",
                 columns: table => new
                 {
-                    IdPostagem = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IdPostagem = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Titulo = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Conteudo = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DataCriacao = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DataAtualizacao = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IdAutor = table.Column<int>(type: "int", nullable: false),
+                    IdAutor = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Tags = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -54,12 +52,11 @@ namespace Blog.Web.Data.Migrations
                 name: "Comments",
                 columns: table => new
                 {
-                    IdComentario = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IdComentario = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Conteudo = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
                     DataPostagem = table.Column<DateTime>(type: "datetime2", nullable: false),
                     NomeAutor = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    IdPostagem = table.Column<int>(type: "int", nullable: false)
+                    IdPostagem = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {

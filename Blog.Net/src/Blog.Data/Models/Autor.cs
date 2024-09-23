@@ -10,7 +10,7 @@ namespace Blog.Data.Models
     public class Autor
     {
         [Key]
-        public int IdAutor { get; set; }
+        public Guid IdAutor { get; set; }
 
         [Required]
         [MaxLength(100)]

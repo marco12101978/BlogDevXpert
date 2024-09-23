@@ -11,7 +11,7 @@ namespace Blog.Data.Models
     public class Postagem
     {
         [Key]
-        public int IdPostagem { get; set; }
+        public Guid IdPostagem { get; set; }
 
         [Required]
         [MaxLength(200)]
@@ -26,7 +26,7 @@ namespace Blog.Data.Models
         public DateTime? DataAtualizacao { get; set; }
 
         [ForeignKey("Autor")]
-        public int IdAutor { get; set; }
+        public Guid IdAutor { get; set; }
         public Autor Autor { get; set; }
 
         public List<Comentario> Comentarios { get; set; }

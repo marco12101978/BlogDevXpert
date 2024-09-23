@@ -2,7 +2,9 @@
 1. Aplicar Migrations - database update
    Este comando aplica todas as migrações pendentes ao banco de dados.
    
-   update-database
+   *update-database
+   *update-database -Context ApplicationDbContext
+   
    dotnet ef database update
    
 2. Reverter Migrations - database update <MigrationName>
@@ -14,6 +16,13 @@
    
    dotnet ef database update 0
    
+   // Remove a ultima migracao 
+   
+   *dotnet ef migrations remove
+   
+   *Remove-Migration -Context ApplicationDbContext
+   
+   
 3. Verificar Status das Migrations - migrations list
    Este comando lista todas as migrations que foram aplicadas e as que estão pendentes.
    
@@ -23,6 +32,8 @@
    Use este comando para criar uma nova migration que capture as mudanças no modelo de dados.
    
    dotnet ef migrations add NomeDaMigration
+   
+   PM -> Add-Migration Models_inicial -Context MeuDbContext
    
 5. Remover a última Migration - migrations remove
    Se você criou uma migration, mas ainda não a aplicou ao banco de dados, pode removê-la com o comando:
