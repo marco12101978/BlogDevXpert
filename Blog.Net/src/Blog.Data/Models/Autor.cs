@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Blog.Data.Models
 {
@@ -14,15 +9,15 @@ namespace Blog.Data.Models
 
         [Required]
         [MaxLength(100)]
-        public string Nome { get; set; }
+        public string? Nome { get; set; }
 
         [Required]
         [EmailAddress]
-        public string Email { get; set; }
+        public string? Email { get; set; }
 
         [MaxLength(500)]
-        public string Biografia { get; set; }
+        public string? Biografia { get; set; }
 
-        public List<Postagem> Postagens { get; set; }
+        public List<Postagem>? Postagens { get; set; }
     }
 }
