@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Blog.Data.Repository
 {
-    internal class AutorRepository : Repository<Autor>, IAutorRepository
+    public class AutorRepository : Repository<Autor>, IAutorRepository
     {
         public AutorRepository(MeuDbContext context) : base(context)
         {

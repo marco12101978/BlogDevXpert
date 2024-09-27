@@ -15,7 +15,7 @@ namespace Blog.Data.Mappings
         {
             builder.Property(c => c.Conteudo)
                    .IsRequired()
-                   .HasMaxLength(1000);
+                   .HasColumnType("varchar(1000)");
 
             builder.Property(c => c.DataPostagem)
                    .IsRequired()
@@ -23,7 +23,7 @@ namespace Blog.Data.Mappings
 
             builder.Property(c => c.NomeAutor)
                    .IsRequired()
-                   .HasMaxLength(100);
+                   .HasColumnType("varchar(100)");
 
             builder.Property(c => c.IdPostagem)
                    .IsRequired();

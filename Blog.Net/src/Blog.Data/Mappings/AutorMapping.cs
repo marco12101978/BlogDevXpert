@@ -10,14 +10,15 @@ namespace Blog.Data.Mappings
         {
             builder.Property(a => a.Nome)
                    .IsRequired()
-                   .HasMaxLength(100);
+                   .HasColumnType("varchar(100)");
 
             builder.Property(a => a.Email)
                    .IsRequired()
                    .HasMaxLength(100);
 
             builder.Property(a => a.Biografia)
-                   .HasMaxLength(1000);
+                   .HasColumnType("varchar(1000)");
+
 
             builder.HasMany(a => a.Postagens)
                    .WithOne(p => p.Autor)
