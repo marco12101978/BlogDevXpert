@@ -9,7 +9,7 @@ namespace Blog.Business.Models.Validations
         {
             RuleFor(c => c.Conteudo)
                     .NotEmpty().WithMessage("O campo {PropertyName} precisa ser fornecido")
-                    .Length(10, 500).WithMessage("{PropertyName} deve ter entre {MinLength} e {MaxLength} caracteres");
+                    .Length(10, 1000).WithMessage("{PropertyName} deve ter entre {MinLength} e {MaxLength} caracteres");
 
             RuleFor(c => c.DataPostagem)
                 .NotEmpty().WithMessage("O campo {PropertyName} precisa ser fornecido")

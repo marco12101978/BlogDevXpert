@@ -7,7 +7,8 @@ namespace Blog.Data.Context
     {
         public MeuDbContext(DbContextOptions<MeuDbContext> options) : base(options)
         {
-
+            ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+            ChangeTracker.AutoDetectChangesEnabled = false;
         }
 
         public DbSet<Postagem> Posts { get; set; }

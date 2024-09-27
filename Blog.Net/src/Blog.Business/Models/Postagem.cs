@@ -24,6 +24,5 @@ namespace Blog.Business.Models
 
         public List<Comentario>? Comentarios { get; set; }
 
-        public List<string>? Tags { get; set; }
     }
 }
