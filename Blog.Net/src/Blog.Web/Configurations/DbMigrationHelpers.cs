@@ -1,7 +1,5 @@
 ﻿using Blog.Data.Context;
-using Blog.Data.Models;
 using Blog.Web.Data;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Blog.Web.Configurations
@@ -48,9 +46,9 @@ namespace Blog.Web.Configurations
 
             var idAutor = Guid.NewGuid();
 
-            await context.Authors.AddAsync(new Blog.Data.Models.Autor()
+            await context.Authors.AddAsync(new Blog.Business.Models.Autor()
             {
-                IdAutor = idAutor,
+                Id = idAutor,
                 Nome = "Marco Aurelio Roque",
                 Email = "marco@marco.com.br",
                 Biografia = "Marco Aurelio Roque é um entusiasta da tecnologia e apaixonado por desenvolvimento de software. Com mais de 15 anos de experiência na área."

@@ -1,4 +1,4 @@
-﻿@using Blog.Data.Models
+﻿@using Blog.Business.Models
 @model IEnumerable<Postagem>
 
 <h2>Postagens Recentes</h2>
@@ -17,7 +17,7 @@
             <tr>
                 <td>@post.Titulo</td>
                 <td>@post.Autor?.Nome</td>
-                <td>@post.DataCriacao.ToShortDateString()</td>
+                <td>@post.DataCriacao?.ToShortDateString()</td>
             </tr>
         }
     </tbody>
