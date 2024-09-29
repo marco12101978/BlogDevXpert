@@ -11,9 +11,9 @@ namespace Blog.Data.Context
             ChangeTracker.AutoDetectChangesEnabled = false;
         }
 
-        public DbSet<Postagem> Posts { get; set; }
-        public DbSet<Autor> Authors { get; set; }
-        public DbSet<Comentario> Comments { get; set; }
+        public DbSet<Postagem> Postagens { get; set; }
+        public DbSet<Autor> Autores { get; set; }
+        public DbSet<Comentario> Comentarios { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -15,7 +15,7 @@ namespace Blog.Data.Repository
         {
             // return await Buscar(p => p.Id == id);
 
-            return await Db.Authors.AsNoTracking().Include(f => f.Id).FirstOrDefaultAsync(p => p.Id == id);
+            return await Db.Autores.AsNoTracking().Include(f => f.Id).FirstOrDefaultAsync(p => p.Id == id);
 
         }
     }

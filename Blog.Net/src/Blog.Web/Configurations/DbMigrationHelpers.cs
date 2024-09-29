@@ -1,4 +1,5 @@
-﻿using Blog.Data.Context;
+﻿using Blog.Business.Models;
+using Blog.Data.Context;
 using Blog.Web.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -39,14 +40,14 @@ namespace Blog.Web.Configurations
 
         private static async Task EnsureSeedProducts(MeuDbContext context, ApplicationDbContext contextId)
         {
-            if (context.Authors.Any())
+            if (context.Autores.Any())
                 return;
 
             //Autor
 
             var idAutor = Guid.NewGuid();
 
-            await context.Authors.AddAsync(new Blog.Business.Models.Autor()
+            await context.Autores.AddAsync(new Blog.Business.Models.Autor()
             {
                 Id = idAutor,
                 Nome = "Marco Aurelio Roque",
@@ -55,6 +56,66 @@ namespace Blog.Web.Configurations
             });
 
             await context.SaveChangesAsync();
+
+
+            var postagem = new Postagem
+            {
+                Id = Guid.NewGuid(),
+                Titulo = "TESTE 1",
+                Conteudo = "é simplesmente uma simulação de texto da indústria tipográfica e de impressos, e vem sendo utilizado desde o século XVI, quando um impressor desconhecido pegou uma bandeja de tipos e os embaralhou para fazer um livro de modelos de tipos. Lorem Ipsum sobreviveu não só a cinco séculos, como também ao salto para a editoração eletrônica, permanecendo essencialmente inalterado. Se popularizou na década de 60, quando a Letraset lançou decalques contendo passagens de Lorem Ipsum, e mais recentemente quando passou a ser integrado a softwares de editoração eletrônica como Aldus PageMaker",
+                DataCriacao = DateTime.Now,
+                IdAutor = idAutor
+            };
+
+            await context.Postagens.AddAsync(postagem);
+
+
+            postagem = new Postagem
+            {
+                Id = Guid.NewGuid(),
+                Titulo = "TESTE 2",
+                Conteudo = "é simplesmente uma simulação de texto da indústria tipográfica e de impressos, e vem sendo utilizado desde o século XVI, quando um impressor desconhecido pegou uma bandeja de tipos e os embaralhou para fazer um livro de modelos de tipos. Lorem Ipsum sobreviveu não só a cinco séculos, como também ao salto para a editoração eletrônica, permanecendo essencialmente inalterado. Se popularizou na década de 60, quando a Letraset lançou decalques contendo passagens de Lorem Ipsum, e mais recentemente quando passou a ser integrado a softwares de editoração eletrônica como Aldus PageMaker",
+                DataCriacao = DateTime.Now,
+                IdAutor = idAutor
+            };
+
+            await context.Postagens.AddAsync(postagem);
+
+
+            postagem = new Postagem
+            {
+                Id = Guid.NewGuid(),
+                Titulo = "TESTE 3",
+                Conteudo = "é simplesmente uma simulação de texto da indústria tipográfica e de impressos, e vem sendo utilizado desde o século XVI, quando um impressor desconhecido pegou uma bandeja de tipos e os embaralhou para fazer um livro de modelos de tipos. Lorem Ipsum sobreviveu não só a cinco séculos, como também ao salto para a editoração eletrônica, permanecendo essencialmente inalterado. Se popularizou na década de 60, quando a Letraset lançou decalques contendo passagens de Lorem Ipsum, e mais recentemente quando passou a ser integrado a softwares de editoração eletrônica como Aldus PageMaker",
+                DataCriacao = DateTime.Now,
+                IdAutor = idAutor
+            };
+
+            await context.Postagens.AddAsync(postagem);
+
+
+            await context.SaveChangesAsync();
+
+            //await context.Postagens.AddAsync(new Blog.Business.Models.Postagem()
+            //{
+            //    Id = idAutor,
+
+            //});
+
+
+            //     public string? Titulo { get; set; }
+
+            //    public string? Conteudo { get; set; }
+
+            //    public DateTime? DataCriacao { get; set; }
+
+            //    public DateTime? DataAtualizacao { get; set; }
+
+            //    public Guid IdAutor { get; set; }
+            //    public Autor? Autor { get; set; }
+
+
+
 
             //await context.Fornecedores.AddAsync(new Fornecedor()
             //{

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Blog.Business.Intefaces
 {
-    internal interface IPostagemService : IDisposable
+    public interface IPostagemService : IDisposable
     {
         Task Adicionar(Comentario comentario);
         Task Atualizar(Comentario comentario);

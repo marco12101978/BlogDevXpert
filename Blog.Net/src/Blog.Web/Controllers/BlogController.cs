@@ -16,7 +16,7 @@ namespace Blog.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var posts = await _context.Posts.Include(p => p.Autor).ToListAsync();
+            var posts = await _context.Postagens.Include(p => p.Autor).ToListAsync();
             return View(posts);
         }
     }

@@ -10,6 +10,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
+builder.Services.AddHttpContextAccessor();
+
+
 builder.Services.AddDbContext<MeuDbContext>(options =>
      options.UseSqlServer(connectionString));
 
@@ -22,7 +25,12 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
+
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 builder.Services.AddControllersWithViews();
+
+builder.Services.ResolveDependencies();
 
 var app = builder.Build();
 
@@ -47,6 +55,9 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
+
+
+
 
 app.UseDbMigrationHelper();
 
