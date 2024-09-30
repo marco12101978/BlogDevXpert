@@ -10,5 +10,8 @@ namespace Blog.Business.Intefaces
     public interface IPostagemRepository : IRepository<Postagem>
     {
         Task<Postagem> ObterPostagem(Guid postagemId);
+
+        Task<List<Postagem>> ObterTodasPostagem();
+
     }
 }

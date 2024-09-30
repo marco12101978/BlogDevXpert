@@ -22,14 +22,26 @@ namespace Blog.Data.Repository
 
         public async Task<Postagem> ObterPostagem(Guid postagemId)
         {
-            var XX = Db.Postagens.ToList();
-
-            postagemId = new Guid("823f6873-6fce-49f0-a39b-9c58a831291f");
-
-            return await Db.Postagens.AsNoTracking().Include(p => p.Autor).FirstOrDefaultAsync(p => p.Id == postagemId);
-
+            return await Db.Postagens.AsNoTracking()
+                                     .Include(p => p.Autor)
+                                     .Include(p => p.Comentarios)
+                                     .FirstOrDefaultAsync(p => p.Id == postagemId);
 
 
+            //return await Db.Postagens.AsNoTracking()
+            //             .Include(p => p.Autor)
+            //             .FirstOrDefaultAsync(p => p.Id == postagemId);
+
+
+        }
+
+        public async Task<List<Postagem>> ObterTodasPostagem()
+        {
+
+            return await Db.Postagens.AsNoTracking()
+                                     .Include(p => p.Autor)
+                                     .OrderByDescending(p => p.DataCriacao)
+                                     .ToListAsync();
         }
     }
 }

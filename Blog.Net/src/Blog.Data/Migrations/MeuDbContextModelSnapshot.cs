@@ -53,7 +53,7 @@ namespace Blog.Data.Migrations
 
                     b.Property<string>("Conteudo")
                         .IsRequired()
-                        .HasColumnType("varchar(1000)");
+                        .HasColumnType("varchar(max)");
 
                     b.Property<DateTime?>("DataPostagem")
                         .IsRequired()
@@ -70,7 +70,7 @@ namespace Blog.Data.Migrations
 
                     b.HasIndex("IdPostagem");
 
-                    b.ToTable("Comments");
+                    b.ToTable("Comentarios");
                 });
 
             modelBuilder.Entity("Blog.Business.Models.Postagem", b =>
@@ -81,7 +81,7 @@ namespace Blog.Data.Migrations
 
                     b.Property<string>("Conteudo")
                         .IsRequired()
-                        .HasColumnType("varchar(1000)");
+                        .HasColumnType("varchar(max)");
 
                     b.Property<DateTime?>("DataAtualizacao")
                         .HasColumnType("datetime2");

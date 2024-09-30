@@ -1,31 +1,37 @@
 ﻿@using Blog.Business.Models
 @model IEnumerable<Postagem>
 
-<h2>Postagens Recentes</h2>
+@{
+    ViewBag.Title = "Postagens Recentes";
+}
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Título</th>
-            <th>Autor</th>
-            <th>Data</th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (Model == null || !Model.Any())
+<div class="container blog-list">
+    <h1 class="texto-centralizado">@ViewBag.Title</h1>
+    
+    <div class="row">
+        @foreach (var postagem in Model)
         {
-           <p>Nenhum post disponível no momento.</p>
+            <div class="col-md-8 offset-md-2">
+                <article class="post">
+                    <header class="post-header">
+                        <h2 class="post-title">
+                            <a class="post-title" href="@Url.Action("Detalhes", "Postagem", new { id = postagem.Id })">
+                                @Html.DisplayFor(modelItem => postagem.Titulo)
+                            </a>
+                        </h2>
+                        <p class="post-meta">
+                            Publicado por <strong>@postagem.Autor?.Nome</strong> em @postagem.DataCriacao?.ToString("dd/MM/yyyy")
+                        </p>
+                    </header>
+                    <div class="post-excerpt">
+                        <p>@(postagem.Conteudo?.Length > 200 ? postagem.Conteudo.Substring(0, 200) + "..." : postagem.Conteudo)</p>
+                    </div>
+                    <footer class="post-footer">
+                        <a href="@Url.Action("Detalhes", "Postagem", new { id = postagem.Id })" class="btn btn-primary">Leia Mais</a>
+                    </footer>
+                </article>
+                <hr />
+            </div>
         }
-        else
-        {
-            @foreach (var post in Model)
-            {
-                <tr>
-                    <td>@post.Titulo</td>
-                    <td>@post.Autor?.Nome</td>
-                    <td>@post.DataCriacao?.ToShortDateString()</td>
-                </tr>
-            }
-        }
-    </tbody>
-</table>
+    </div>
+</div>

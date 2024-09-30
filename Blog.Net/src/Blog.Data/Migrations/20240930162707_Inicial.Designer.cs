@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Blog.Data.Migrations
 {
     [DbContext(typeof(MeuDbContext))]
-    [Migration("20240927230757_initial")]
-    partial class initial
+    [Migration("20240930162707_Inicial")]
+    partial class Inicial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -56,7 +56,7 @@ namespace Blog.Data.Migrations
 
                     b.Property<string>("Conteudo")
                         .IsRequired()
-                        .HasColumnType("varchar(1000)");
+                        .HasColumnType("varchar(max)");
 
                     b.Property<DateTime?>("DataPostagem")
                         .IsRequired()
@@ -73,7 +73,7 @@ namespace Blog.Data.Migrations
 
                     b.HasIndex("IdPostagem");
 
-                    b.ToTable("Comments");
+                    b.ToTable("Comentarios");
                 });
 
             modelBuilder.Entity("Blog.Business.Models.Postagem", b =>
@@ -84,7 +84,7 @@ namespace Blog.Data.Migrations
 
                     b.Property<string>("Conteudo")
                         .IsRequired()
-                        .HasColumnType("varchar(1000)");
+                        .HasColumnType("varchar(max)");
 
                     b.Property<DateTime?>("DataAtualizacao")
                         .HasColumnType("datetime2");

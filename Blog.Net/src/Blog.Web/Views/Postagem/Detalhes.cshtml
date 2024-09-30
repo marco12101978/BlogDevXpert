@@ -1,0 +1,47 @@
+﻿@using Blog.Business.Models
+@model Postagem
+
+@{
+    ViewBag.Title = Model.Titulo;
+}
+
+<div class="container post-details">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <article class="post">
+                <header class="post-header">
+                    <h1 class="post-title">@Model.Titulo</h1>
+                    <p class="post-meta">
+                        Publicado por <strong>@Model.Autor?.Nome</strong> em @Model.DataCriacao?.ToString("dd/MM/yyyy")
+                    </p>
+                </header>
+
+                <div class="post-content">
+                    @Html.Raw(Model.Conteudo?.Replace("\r\n", "<br />").Replace("\n", "<br />").Replace("\r", "<br />"))
+                </div>
+
+                <section class="comments-section">
+                    <h3>Comentários</h3>
+                    @if (Model.Comentarios != null && Model.Comentarios.Any())
+                    {
+                        <ul class="comments-list">
+                            @foreach (var comentario in Model.Comentarios)
+                            {
+                                <li>
+                                    <p>@comentario.Conteudo</p>
+                                    <p class="comment-meta">
+                                        <small>Por <strong>@comentario.NomeAutor</strong> em @comentario.DataPostagem?.ToString("dd/MM/yyyy")</small>
+                                    </p>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p>Nenhum comentário ainda.</p>
+                    }
+                </section>
+            </article>
+        </div>
+    </div>
+</div>

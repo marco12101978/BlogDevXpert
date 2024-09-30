@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Blog.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class Inicial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -31,7 +31,7 @@ namespace Blog.Data.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Titulo = table.Column<string>(type: "varchar(200)", nullable: false),
-                    Conteudo = table.Column<string>(type: "varchar(1000)", nullable: false),
+                    Conteudo = table.Column<string>(type: "varchar(max)", nullable: false),
                     DataCriacao = table.Column<DateTime>(type: "datetime", nullable: false),
                     DataAtualizacao = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IdAutor = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
@@ -47,28 +47,28 @@ namespace Blog.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Comments",
+                name: "Comentarios",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Conteudo = table.Column<string>(type: "varchar(1000)", nullable: false),
+                    Conteudo = table.Column<string>(type: "varchar(max)", nullable: false),
                     DataPostagem = table.Column<DateTime>(type: "datetime", nullable: false),
                     NomeAutor = table.Column<string>(type: "varchar(100)", nullable: false),
                     IdPostagem = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Comments", x => x.Id);
+                    table.PrimaryKey("PK_Comentarios", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Comments_Postagem_IdPostagem",
+                        name: "FK_Comentarios_Postagem_IdPostagem",
                         column: x => x.IdPostagem,
                         principalTable: "Postagem",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comments_IdPostagem",
-                table: "Comments",
+                name: "IX_Comentarios_IdPostagem",
+                table: "Comentarios",
                 column: "IdPostagem");
 
             migrationBuilder.CreateIndex(
@@ -81,7 +81,7 @@ namespace Blog.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Comments");
+                name: "Comentarios");
 
             migrationBuilder.DropTable(
                 name: "Postagem");
