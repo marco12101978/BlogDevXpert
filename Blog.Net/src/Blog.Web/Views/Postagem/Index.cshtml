@@ -20,7 +20,7 @@
                             </a>
                         </h2>
                         <p class="post-meta">
-                            Publicado por <strong>@postagem.Autor?.Nome</strong> em @postagem.DataCriacao?.ToString("dd/MM/yyyy")
+                            Publicado por <strong>@postagem.Autor?.Nome</strong> em @postagem.DataCriacao?.ToString("dd/MM/yyyy HH:mm:ss")
                         </p>
                     </header>
                     <div class="post-excerpt">
@@ -28,6 +28,7 @@
                     </div>
                     <footer class="post-footer">
                         <a href="@Url.Action("Detalhes", "Postagem", new { id = postagem.Id })" class="btn btn-primary">Leia Mais</a>
+                        <a href="@Url.Action("Delete", "Postagem", new { id = postagem.Id })" class="btn btn-danger">Excluir</a>
                     </footer>
                 </article>
                 <hr />

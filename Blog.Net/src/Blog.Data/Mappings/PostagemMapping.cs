@@ -35,7 +35,8 @@ namespace Blog.Data.Mappings
 
             builder.HasOne(p => p.Autor)
                    .WithMany(a => a.Postagens)  
-                   .HasForeignKey(p => p.IdAutor);
+                   .HasForeignKey(p => p.IdAutor)
+                   .OnDelete(DeleteBehavior.Cascade);
 
             builder.ToTable("Postagem");
         }

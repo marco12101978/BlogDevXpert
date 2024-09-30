@@ -1,6 +1,7 @@
 ﻿using Blog.Business.Models;
 using Blog.Data.Context;
 using Blog.Web.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -63,10 +64,13 @@ namespace Blog.Web.Configurations
                 TwoFactorEnabled = false,
                 ConcurrencyStamp = Guid.NewGuid().ToString(),
                 EmailConfirmed = true,
-                SecurityStamp = Guid.NewGuid().ToString()
+                SecurityStamp = Guid.NewGuid().ToString(),
+                
             });
 
             await contextId.SaveChangesAsync();
+
+            //await contextId.UserRoles("Admin"));
 
             #endregion
 

@@ -52,7 +52,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Postagem}/{action=Index}/{id?}");
 app.MapRazorPages();
 
 
