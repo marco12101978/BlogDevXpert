@@ -3,6 +3,8 @@ using Blog.Data.Context;
 using Blog.Web.Data;
 using Microsoft.EntityFrameworkCore;
 
+
+
 namespace Blog.Web.Configurations
 {
     public static class DbMigrationHelperExtension
@@ -46,6 +48,26 @@ namespace Blog.Web.Configurations
             //Autor
 
             var idAutor = Guid.NewGuid();
+
+            await contextId.Users.AddAsync(new Microsoft.AspNetCore.Identity.IdentityUser
+            {
+                Id =  idAutor.ToString(),
+                UserName = "marco@imperiumsolucoes.com.br",
+                NormalizedUserName = "MARCO@IMPERIUMSOLUCOES.COM.BR",
+                Email = "marco@imperiumsolucoes.com.br",
+                NormalizedEmail = "MARCO@IMPERIUMSOLUCOES.COM.BR",
+                AccessFailedCount = 0,
+                LockoutEnabled = false,
+                PasswordHash = "AQAAAAIAAYagAAAAEK2wx+k3kW2104aBWullMN7JJ6VTreIIcBpiyzNVRhRONj2J5GX9ig8EIA9TQcqn9w==",
+                TwoFactorEnabled = false,
+                ConcurrencyStamp = Guid.NewGuid().ToString(),
+                EmailConfirmed = true,
+                SecurityStamp = Guid.NewGuid().ToString()
+            });
+
+            await contextId.SaveChangesAsync();
+
+
 
             await context.Autores.AddAsync(new Blog.Business.Models.Autor()
             {
@@ -96,95 +118,16 @@ namespace Blog.Web.Configurations
 
             await context.SaveChangesAsync();
 
-            //await context.Postagens.AddAsync(new Blog.Business.Models.Postagem()
-            //{
-            //    Id = idAutor,
 
-            //});
+            if (contextId.Users.Any())
+                return;
 
-
-            //     public string? Titulo { get; set; }
-
-            //    public string? Conteudo { get; set; }
-
-            //    public DateTime? DataCriacao { get; set; }
-
-            //    public DateTime? DataAtualizacao { get; set; }
-
-            //    public Guid IdAutor { get; set; }
-            //    public Autor? Autor { get; set; }
+            //
 
 
 
 
-            //await context.Fornecedores.AddAsync(new Fornecedor()
-            //{
-            //    Id = idFornecedor,
-            //    Nome = "Fornecedor Teste",
-            //    Documento = "49445522389",
-            //    TipoFornecedor = TipoFornecedor.PessoaFisica,
-            //    Ativo = true,
-            //    Endereco = new Endereco()
-            //    {
-            //        Logradouro = "Rua Teste",
-            //        Numero = "123",
-            //        Complemento = "Complemento",
-            //        Bairro = "Teste",
-            //        Cep = "03180000",
-            //        Cidade = "São Paulo",
-            //        Estado = "SP"
-            //    }
-            //});
 
-            //await context.SaveChangesAsync();
-
-            //if (context.Produtos.Any())
-            //    return;
-
-            //await context.Produtos.AddAsync(new Produto()
-            //{
-            //    Nome = "Livro CSS",
-            //    Valor = 50,
-            //    Descricao = "Teste",
-            //    Ativo = true,
-            //    DataCadastro = DateTime.Now,
-            //    FornecedorId = idFornecedor
-            //});
-
-            //await context.Produtos.AddAsync(new Produto()
-            //{
-            //    Nome = "Livro jQuery",
-            //    Valor = 150,
-            //    Descricao = "Teste",
-            //    Ativo = true,
-            //    DataCadastro = DateTime.Now,
-            //    FornecedorId = idFornecedor
-            //});
-
-            //await context.Produtos.AddAsync(new Produto()
-            //{
-            //    Nome = "Livro HTML",
-            //    Valor = 90,
-            //    Descricao = "Teste",
-            //    Ativo = true,
-            //    DataCadastro = DateTime.Now,
-            //    FornecedorId = idFornecedor
-            //});
-
-            //await context.Produtos.AddAsync(new Produto()
-            //{
-            //    Nome = "Livro Razor",
-            //    Valor = 50,
-            //    Descricao = "Teste",
-            //    Ativo = true,
-            //    DataCadastro = DateTime.Now,
-            //    FornecedorId = idFornecedor
-            //});
-
-            //await context.SaveChangesAsync();
-
-            //if (contextId.Users.Any())
-            //    return;
 
             //await contextId.Users.AddAsync(new IdentityUser
             //{

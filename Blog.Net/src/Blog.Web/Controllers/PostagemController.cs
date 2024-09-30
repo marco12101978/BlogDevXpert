@@ -54,7 +54,7 @@ namespace Blog.Web.Controllers
             //var posts = await _context.Posts.Include(p => p.Autor).ToListAsync();
             // return View(posts);
 
-            var posts = await _repository.ObterTodos();
+            var posts = await _repository.ObterPostagem(UserId);
             return View(posts);
 
         }

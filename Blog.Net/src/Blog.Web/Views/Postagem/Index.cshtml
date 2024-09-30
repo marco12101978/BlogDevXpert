@@ -12,13 +12,20 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var post in Model)
+        @if (Model == null || !Model.Any())
         {
-            <tr>
-                <td>@post.Titulo</td>
-                <td>@post.Autor?.Nome</td>
-                <td>@post.DataCriacao?.ToShortDateString()</td>
-            </tr>
+           <p>Nenhum post disponível no momento.</p>
+        }
+        else
+        {
+            @foreach (var post in Model)
+            {
+                <tr>
+                    <td>@post.Titulo</td>
+                    <td>@post.Autor?.Nome</td>
+                    <td>@post.DataCriacao?.ToShortDateString()</td>
+                </tr>
+            }
         }
     </tbody>
 </table>
