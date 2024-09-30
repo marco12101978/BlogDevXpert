@@ -55,10 +55,6 @@ app.MapControllerRoute(
     pattern: "{controller=Postagem}/{action=Index}/{id?}");
 app.MapRazorPages();
 
-
-
-
 app.UseDbMigrationHelper();
-
 
 app.Run();

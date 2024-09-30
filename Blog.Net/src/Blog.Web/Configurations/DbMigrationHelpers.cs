@@ -37,11 +37,11 @@ namespace Blog.Web.Configurations
                 await context.Database.MigrateAsync();
                 await contextId.Database.MigrateAsync();
 
-                await EnsureSeedProducts(context, contextId);
+                await EnsureSeedProducts(serviceProvider,context, contextId);
             }
         }
 
-        private static async Task EnsureSeedProducts(MeuDbContext context, ApplicationDbContext contextId)
+        private static async Task EnsureSeedProducts(IServiceProvider serviceProvider,MeuDbContext context, ApplicationDbContext contextId)
         {
             if (contextId.Users.Any())
                 return;
@@ -51,9 +51,9 @@ namespace Blog.Web.Configurations
 
             var idAutor = Guid.NewGuid();
 
-            await contextId.Users.AddAsync(new Microsoft.AspNetCore.Identity.IdentityUser
+            var user = new Microsoft.AspNetCore.Identity.IdentityUser
             {
-                Id =  idAutor.ToString(),
+                Id = idAutor.ToString(),
                 UserName = "marco@imperiumsolucoes.com.br",
                 NormalizedUserName = "MARCO@IMPERIUMSOLUCOES.COM.BR",
                 Email = "marco@imperiumsolucoes.com.br",
@@ -65,12 +65,30 @@ namespace Blog.Web.Configurations
                 ConcurrencyStamp = Guid.NewGuid().ToString(),
                 EmailConfirmed = true,
                 SecurityStamp = Guid.NewGuid().ToString(),
-                
-            });
+            };
+
+            await contextId.Users.AddAsync(user);
 
             await contextId.SaveChangesAsync();
 
-            //await contextId.UserRoles("Admin"));
+            // Obter o UserManager e RoleManager manualmente
+            var userManager = serviceProvider.GetService<UserManager<Microsoft.AspNetCore.Identity.IdentityUser>>();
+            var roleManager = serviceProvider.GetService<RoleManager<Microsoft.AspNetCore.Identity.IdentityRole>>();
+
+            // Adicionar o usuário ao contexto
+            //await userManager.CreateAsync(user, "Imp@S2291755"); // Use uma senha segura
+
+            // Verificar se a role "Admin" já existe
+            var roleExists = await roleManager.RoleExistsAsync("Admin");
+
+            if (!roleExists)
+            {
+                // Se não existir, criar a role "Admin"
+                await roleManager.CreateAsync(new IdentityRole("Admin"));
+            }
+
+            // Adicionar o usuário à role "Admin"
+            await userManager.AddToRoleAsync(user, "Admin");
 
             #endregion
 
