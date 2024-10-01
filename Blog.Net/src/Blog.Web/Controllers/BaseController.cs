@@ -9,6 +9,8 @@ namespace Blog.Web.Controllers
 
         protected Guid UserId { get; set; }
         protected string UserName { get; set; }
+        protected bool UserAdmin { get; set; }
+
 
         protected BaseController(INotificador notificador,
                                  IAppIdentityUser user)
@@ -19,6 +21,7 @@ namespace Blog.Web.Controllers
             {
                 UserId = user.GetUserId();
                 UserName = user.GetUsername();
+                UserAdmin = user.IsInRole("Admin");
             }
         }
 

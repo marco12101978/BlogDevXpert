@@ -3,7 +3,11 @@
 
 @{
     ViewBag.Title = "Postagens Recentes";
+    var userId = @ViewBag.IdUser ?? Guid.Empty;
+    var isAdmin = @ViewBag.Admin ?? false;
 }
+
+
 
 
 <div class="container blog-list">
@@ -32,7 +36,16 @@
                         </div>
                         <footer class="card-footer">
                             <a href="@Url.Action("Detalhes", "Postagem", new { id = postagem.Id })" class="btn btn-primary">Leia Mais</a>
-                            <a href="@Url.Action("Delete", "Postagem", new { id = postagem.Id })" class="btn btn-danger">Excluir</a>
+                            @if (userId == postagem?.IdAutor || isAdmin)
+                            {
+                                <a href="@Url.Action("Editar"  , "Postagem", new { id = postagem?.Id })" class="btn btn-primary">Editar</a>
+                                <a href="@Url.Action("Excluir"  , "Postagem", new { id = postagem?.Id })" class="btn btn-danger">Excluir</a>
+                            }
+                            else
+                            {
+                                <button class="btn btn-secondary" disabled>Editar</button>
+                                <button class="btn btn-secondary" disabled>Excluir</button>
+                            }
                         </footer>
                     </div>
                 </div>

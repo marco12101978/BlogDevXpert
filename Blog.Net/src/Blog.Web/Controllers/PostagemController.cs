@@ -104,6 +104,9 @@ namespace Blog.Web.Controllers
         [Route("lista-de-postagem")]
         public async Task<IActionResult> Index()
         {
+            ViewBag.IdUser = UserId;
+            ViewBag.Admin = UserAdmin;
+
             var posts = await _repository.ObterTodasPostagem();
             return View(posts);
 

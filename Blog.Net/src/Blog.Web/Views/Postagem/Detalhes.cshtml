@@ -19,7 +19,6 @@
                 <div class="post-content">
                     @Html.Raw(Model.Conteudo?.Replace("\r\n", "<br />").Replace("\n", "<br />").Replace("\r", "<br />"))
                 </div>
-
                 <section class="comments-section">
                     <h3>Comentários</h3>
                     @if (Model.Comentarios != null && Model.Comentarios.Any())
@@ -32,6 +31,8 @@
                                     <p class="comment-meta">
                                         <small>Por <strong>@comentario.NomeAutor</strong> em @comentario.DataPostagem?.ToString("dd/MM/yyyy")</small>
                                     </p>
+                                    <a href="@Url.Action("Editar", "Comentario", new { id = comentario.Id })" class="btn btn-primary btn-sm">Editar</a>
+                                    <a href="@Url.Action("Delete", "Comentario", new { id = comentario.Id })" class="btn btn-danger btn-sm">Excluir</a>
                                 </li>
                             }
                         </ul>
@@ -41,7 +42,14 @@
                         <p>Nenhum comentário ainda.</p>
                     }
                 </section>
+                <div style="text-align: center;margin-bottom: 20px;">
+                    <a href="@Url.Action("Create", "Postagem", new { area = "" })" class="btn btn-primary btn-lg"> + Novo Comentário</a>
+                </div>
+                <div>
+                    <a asp-action="Index">Voltar</a>
+                </div>
             </article>
         </div>
+
     </div>
 </div>
