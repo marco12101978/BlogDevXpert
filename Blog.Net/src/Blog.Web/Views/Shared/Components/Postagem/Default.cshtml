@@ -5,10 +5,13 @@
     ViewBag.Title = "Postagens Recentes";
 }
 
-<a href="@Url.Action("Detalhes", "Postagem", new { id = postagem.Id })" class="btn btn-primary">Leia Mais</a>
 
 <div class="container blog-list">
-    <h1 class="texto-centralizado">@ViewBag.Title</h1>
+    @* <h1 class="texto-centralizado">@ViewBag.Title</h1> *@
+
+    <div style="text-align: center;margin-bottom: 20px;">
+        <a href="@Url.Action("Create", "Postagem", new { area = "" })" class="btn btn-primary btn-lg"> + Nova Postagem</a>
+    </div>
 
     <div class="row">
         @foreach (var postagem in Model)
