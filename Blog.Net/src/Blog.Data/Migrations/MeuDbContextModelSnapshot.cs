@@ -109,6 +109,7 @@ namespace Blog.Data.Migrations
                     b.HasOne("Blog.Business.Models.Postagem", "Postagem")
                         .WithMany("Comentarios")
                         .HasForeignKey("IdPostagem")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Postagem");
@@ -119,6 +120,7 @@ namespace Blog.Data.Migrations
                     b.HasOne("Blog.Business.Models.Autor", "Autor")
                         .WithMany("Postagens")
                         .HasForeignKey("IdAutor")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Autor");

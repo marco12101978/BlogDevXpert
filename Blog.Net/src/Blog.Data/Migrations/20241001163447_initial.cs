@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Blog.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class Inicial : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -43,7 +43,8 @@ namespace Blog.Data.Migrations
                         name: "FK_Postagem_Autor_IdAutor",
                         column: x => x.IdAutor,
                         principalTable: "Autor",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -63,7 +64,8 @@ namespace Blog.Data.Migrations
                         name: "FK_Comentarios_Postagem_IdPostagem",
                         column: x => x.IdPostagem,
                         principalTable: "Postagem",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(

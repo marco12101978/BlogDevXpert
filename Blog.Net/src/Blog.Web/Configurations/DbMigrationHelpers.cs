@@ -67,28 +67,36 @@ namespace Blog.Web.Configurations
                 SecurityStamp = Guid.NewGuid().ToString(),
             };
 
+            ////await userManager.CreateAsync(user, "Imp@S2291755"); // Use uma senha segura
+
             await contextId.Users.AddAsync(user);
 
             await contextId.SaveChangesAsync();
 
-            //// Obter o UserManager e RoleManager manualmente
-            //var userManager = serviceProvider.GetService<UserManager<Microsoft.AspNetCore.Identity.IdentityUser>>();
-            //var roleManager = serviceProvider.GetService<RoleManager<Microsoft.AspNetCore.Identity.IdentityRole>>();
+            #endregion
 
-            //// Adicionar o usuário ao contexto
-            ////await userManager.CreateAsync(user, "Imp@S2291755"); // Use uma senha segura
+            #region Roles
 
-            //// Verificar se a role "Admin" já existe
-            //var roleExists = await roleManager.RoleExistsAsync("Admin");
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-            //if (!roleExists)
-            //{
-            //    // Se não existir, criar a role "Admin"
-            //    await roleManager.CreateAsync(new IdentityRole("Admin"));
-            //}
 
-            //// Adicionar o usuário à role "Admin"
-            //await userManager.AddToRoleAsync(user, "Admin");
+            string[] roleNames = { "Admin", "User", "Manager" };
+
+            foreach (var roleName in roleNames)
+            {
+                var roleExist = await roleManager.RoleExistsAsync(roleName);
+                if (!roleExist)
+                {
+                    await roleManager.CreateAsync(new IdentityRole(roleName));
+                }
+            }
+
+            var _userManager = serviceProvider.GetService<UserManager<Microsoft.AspNetCore.Identity.IdentityUser>>();
+
+            user = await _userManager.FindByIdAsync(idAutor.ToString());
+
+            await _userManager.AddToRoleAsync(user, "Admin");
+
 
             #endregion
 
@@ -106,7 +114,7 @@ namespace Blog.Web.Configurations
 
             #endregion
 
-
+            #region Postagens
             Postagem postagem;
 
             #region Postagem 1
@@ -159,10 +167,9 @@ namespace Blog.Web.Configurations
 
             #endregion
 
+            #endregion
 
- 
-
-
+            #region Comentarios
             Comentario comentario;
 
             #region Comentarios Postagem 1
@@ -286,6 +293,8 @@ namespace Blog.Web.Configurations
 
 
             await context.SaveChangesAsync();
+
+            #endregion
         }
     }
 }

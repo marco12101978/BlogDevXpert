@@ -31,6 +31,7 @@ namespace Blog.Web.Controllers
 
         [Authorize]
         [HttpGet]
+        [Route("nova-postagem")]
         public async Task<IActionResult> Create()
         {
             var _autor = await _autorRepository.Buscar(p => p.Id == UserId);
@@ -47,6 +48,7 @@ namespace Blog.Web.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Route("nova-postagem")]
         public async Task<IActionResult> Create([Bind("Titulo,Conteudo,IdAutor")] Postagem postagem)
         {
             if (ModelState.IsValid)
@@ -98,8 +100,8 @@ namespace Blog.Web.Controllers
 
 
 
-
-
+        [AllowAnonymous]
+        [Route("lista-de-postagem")]
         public async Task<IActionResult> Index()
         {
             var posts = await _repository.ObterTodasPostagem();
@@ -107,6 +109,8 @@ namespace Blog.Web.Controllers
 
         }
 
+        [AllowAnonymous]
+        [Route("dados-da-postagem/{id:guid}")]
         public async Task<IActionResult> Detalhes(Guid id)
         {
             var postagem = await _repository.ObterPostagem(id);

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Blog.Data.Migrations
 {
     [DbContext(typeof(MeuDbContext))]
-    [Migration("20240930162707_Inicial")]
-    partial class Inicial
+    [Migration("20241001163447_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -112,6 +112,7 @@ namespace Blog.Data.Migrations
                     b.HasOne("Blog.Business.Models.Postagem", "Postagem")
                         .WithMany("Comentarios")
                         .HasForeignKey("IdPostagem")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Postagem");
@@ -122,6 +123,7 @@ namespace Blog.Data.Migrations
                     b.HasOne("Blog.Business.Models.Autor", "Autor")
                         .WithMany("Postagens")
                         .HasForeignKey("IdAutor")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Autor");

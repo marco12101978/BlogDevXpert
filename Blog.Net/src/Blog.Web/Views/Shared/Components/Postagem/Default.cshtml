@@ -1,0 +1,40 @@
+﻿@using Blog.Business.Models
+@model IEnumerable<Postagem>
+
+@{
+    ViewBag.Title = "Postagens Recentes";
+}
+
+<a href="@Url.Action("Detalhes", "Postagem", new { id = postagem.Id })" class="btn btn-primary">Leia Mais</a>
+
+<div class="container blog-list">
+    <h1 class="texto-centralizado">@ViewBag.Title</h1>
+
+    <div class="row">
+        @foreach (var postagem in Model)
+        {
+            <div class="col-md-8 offset-md-2">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h2 class="card-title">
+                            <a href="@Url.Action("Detalhes", "Postagem", new { id = postagem.Id })">
+                                @Html.DisplayFor(modelItem => postagem.Titulo)
+                            </a>
+                        </h2>
+                        <p class="card-meta">
+                            Publicado por <strong>@postagem.Autor?.Nome</strong> em @postagem.DataCriacao?.ToString("dd/MM/yyyy HH:mm:ss")
+                        </p>
+                        <div class="card-excerpt">
+                            <p>@(postagem.Conteudo?.Length > 200 ? postagem.Conteudo.Substring(0, 200) + "..." : postagem.Conteudo)</p>
+                        </div>
+                        <footer class="card-footer">
+                            <a href="@Url.Action("Detalhes", "Postagem", new { id = postagem.Id })" class="btn btn-primary">Leia Mais</a>
+                            <a href="@Url.Action("Delete", "Postagem", new { id = postagem.Id })" class="btn btn-danger">Excluir</a>
+                        </footer>
+                    </div>
+                </div>
+                <hr />
+            </div>
+        }
+    </div>
+</div>
