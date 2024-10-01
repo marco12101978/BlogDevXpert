@@ -1,18 +1,20 @@
 
 [BlogDevXpert.Net] - Aplicação de Blog Simples com MVC e API RESTful
+
 1. Apresentação
-Bem-vindo ao repositório do projeto [BlogDevXpert.Net]. Este projeto é uma entrega do MBA DevXpert Full Stack .NET e é referente ao módulo Introdução ao Desenvolvimento ASP.NET Core. O objetivo principal desenvolver uma aplicação de blog que permite aos usuários criar, editar, visualizar e excluir posts e comentários, tanto através de uma interface web utilizando MVC quanto através de uma API RESTful. Descreva livremente mais detalhes do seu projeto aqui.
+Seja bem-vindo ao repositório do projeto BlogDevXpert.Net. Este projeto faz parte do MBA DevXpert Full Stack .NET, relacionado ao módulo de Introdução ao Desenvolvimento ASP.NET Core. O principal objetivo deste projeto é criar uma aplicação de blog que permita aos usuários gerenciar posts e comentários, incluindo funcionalidades de criação, edição, visualização e exclusão. A aplicação oferece uma interface web baseada no padrão MVC, além de fornecer suporte a operações via API RESTful.
 
 Autor
 Marco Aurelio Roque Pinto
 
 2. Proposta do Projeto
-O projeto consiste em:
+Este projeto abrange os seguintes componentes:
 
-Aplicação MVC: Interface web para interação com o blog.
-API RESTful: Exposição dos recursos do blog para integração com outras aplicações ou desenvolvimento de front-ends alternativos.
-Autenticação e Autorização: Implementação de controle de acesso, diferenciando administradores e usuários comuns.
-Acesso a Dados: Implementação de acesso ao banco de dados através de ORM.
+Aplicação MVC: Uma interface web para interação direta com o blog.
+API RESTful: Disponibilização dos recursos do blog para permitir integrações com outras aplicações ou o desenvolvimento de front-ends alternativos.
+Autenticação e Autorização: Controle de acesso, distinguindo entre administradores e usuários comuns.
+Acesso a Dados: Integração com o banco de dados por meio de um ORM, facilitando a manipulação dos dados.
+
 
 3. Tecnologias Utilizadas
 Linguagem de Programação: C#
@@ -23,10 +25,10 @@ Entity Framework Core
 Banco de Dados: SQL Server
 Autenticação e Autorização:
 ASP.NET Core Identity
-JWT (JSON Web Token) para autenticação na API
+JWT (JSON Web Token) para autenticação nas APIs
 Front-end:
 Razor Pages/Views
-HTML/CSS para estilização básica
+HTML/CSS para a estilização
 Documentação da API: Swagger
 
 4. Estrutura do Projeto
@@ -53,6 +55,7 @@ Pré-requisitos
 SQL Server
 Visual Studio 2022 ou superior (ou qualquer IDE de sua preferência)
 Git
+
 Passos para Execução
 Clone o Repositório:
 
