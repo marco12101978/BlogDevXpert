@@ -120,4 +120,10 @@ Após iniciar a API, acesse a documentação em: `http://localhost:5001/swagger`
 
 ---
 
+## **9. Avaliação**
+
+- Este projeto é parte de um curso acadêmico e não aceita contribuições externas. 
+- Para feedbacks ou dúvidas utilize o recurso de Issues
+- O arquivo `FEEDBACK.md` é um resumo das avaliações do instrutor e deverá ser modificado apenas por ele.
+
 Este README deve ajudar na compreensão geral e execução do projeto BlogDevXpert.Net.
