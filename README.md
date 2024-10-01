@@ -2,12 +2,14 @@
 [BlogDevXpert.Net] - Aplicação de Blog Simples com MVC e API RESTful
 
 1. Apresentação
+
 Seja bem-vindo ao repositório do projeto BlogDevXpert.Net. Este projeto faz parte do MBA DevXpert Full Stack .NET, relacionado ao módulo de Introdução ao Desenvolvimento ASP.NET Core. O principal objetivo deste projeto é criar uma aplicação de blog que permita aos usuários gerenciar posts e comentários, incluindo funcionalidades de criação, edição, visualização e exclusão. A aplicação oferece uma interface web baseada no padrão MVC, além de fornecer suporte a operações via API RESTful.
 
 Autor
 Marco Aurelio Roque Pinto
 
 2. Proposta do Projeto
+
 Este projeto abrange os seguintes componentes:
 
 Aplicação MVC: Uma interface web para interação direta com o blog.
