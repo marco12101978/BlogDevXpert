@@ -1,5 +1,3 @@
-Aqui está o texto formatado para o README do Git, conforme solicitado:
-
 # BlogDevXpert.Net - Aplicação de Blog Simples com MVC e API RESTful
 
 ## 1. Apresentação
