@@ -71,24 +71,24 @@ namespace Blog.Web.Configurations
 
             await contextId.SaveChangesAsync();
 
-            // Obter o UserManager e RoleManager manualmente
-            var userManager = serviceProvider.GetService<UserManager<Microsoft.AspNetCore.Identity.IdentityUser>>();
-            var roleManager = serviceProvider.GetService<RoleManager<Microsoft.AspNetCore.Identity.IdentityRole>>();
+            //// Obter o UserManager e RoleManager manualmente
+            //var userManager = serviceProvider.GetService<UserManager<Microsoft.AspNetCore.Identity.IdentityUser>>();
+            //var roleManager = serviceProvider.GetService<RoleManager<Microsoft.AspNetCore.Identity.IdentityRole>>();
 
-            // Adicionar o usuário ao contexto
-            //await userManager.CreateAsync(user, "Imp@S2291755"); // Use uma senha segura
+            //// Adicionar o usuário ao contexto
+            ////await userManager.CreateAsync(user, "Imp@S2291755"); // Use uma senha segura
 
-            // Verificar se a role "Admin" já existe
-            var roleExists = await roleManager.RoleExistsAsync("Admin");
+            //// Verificar se a role "Admin" já existe
+            //var roleExists = await roleManager.RoleExistsAsync("Admin");
 
-            if (!roleExists)
-            {
-                // Se não existir, criar a role "Admin"
-                await roleManager.CreateAsync(new IdentityRole("Admin"));
-            }
+            //if (!roleExists)
+            //{
+            //    // Se não existir, criar a role "Admin"
+            //    await roleManager.CreateAsync(new IdentityRole("Admin"));
+            //}
 
-            // Adicionar o usuário à role "Admin"
-            await userManager.AddToRoleAsync(user, "Admin");
+            //// Adicionar o usuário à role "Admin"
+            //await userManager.AddToRoleAsync(user, "Admin");
 
             #endregion
 
