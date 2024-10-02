@@ -16,10 +16,12 @@ namespace Blog.Web.Controllers
         private readonly IPostagemService _service;
 
         private readonly IAutorRepository _autorRepository;
+        private readonly IAutorService _autorService;
 
         public PostagemController(IPostagemRepository repository,
                                   IPostagemService service,
                                   IAutorRepository autorRepository,
+                                  IAutorService autorService,
                                   INotificador notificador,
                                   IAppIdentityUser user) : base(notificador, user)
         {
@@ -27,7 +29,41 @@ namespace Blog.Web.Controllers
             _service = service;
 
             _autorRepository = autorRepository;
+            _autorService = autorService;
         }
+
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("lista-de-postagem")]
+        public async Task<IActionResult> Index()
+        {
+            ViewBag.IdUser = UserId;
+            ViewBag.Admin = UserAdmin;
+
+            var posts = await _repository.ObterTodasPostagem();
+            return View(posts);
+
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("dados-da-postagem/{id:guid}")]
+        public async Task<IActionResult> Detalhes(Guid id)
+        {
+            ViewBag.IdUser = UserId;
+            ViewBag.Admin = UserAdmin;
+
+            var postagem = await _repository.ObterPostagem(id);
+
+            if (postagem == null)
+            {
+                return NotFound();
+            }
+
+            return View(postagem);
+        }
+
 
         [Authorize]
         [HttpGet]
@@ -38,10 +74,18 @@ namespace Blog.Web.Controllers
 
             if (_autor == null || !_autor.Any())
             {
-                var xx = UserName;
-                var xxxx = UserId ;
+                var _insAutor = new Autor
+                {
+                    Email = UserName,
+                    Nome = UserName,
+                    Id = UserId,
+                    Biografia = ""
+                };
 
-                return NotFound($"Nenhum autor encontrado. {UserId}-{UserName}"); 
+
+                await _autorService.Adicionar(_insAutor);
+
+                //return NotFound($"Nenhum autor encontrado. {UserId}-{UserName}"); 
             }
 
             return View();
@@ -103,34 +147,7 @@ namespace Blog.Web.Controllers
 
 
 
-        [AllowAnonymous]
-        [Route("lista-de-postagem")]
-        public async Task<IActionResult> Index()
-        {
-            ViewBag.IdUser = UserId;
-            ViewBag.Admin = UserAdmin;
 
-            var posts = await _repository.ObterTodasPostagem();
-            return View(posts);
-
-        }
-
-        [AllowAnonymous]
-        [Route("dados-da-postagem/{id:guid}")]
-        public async Task<IActionResult> Detalhes(Guid id)
-        {
-            ViewBag.IdUser = UserId;
-            ViewBag.Admin = UserAdmin;
-
-            var postagem = await _repository.ObterPostagem(id);
-
-            if (postagem == null)
-            {
-                return NotFound(); 
-            }
-
-            return View(postagem);
-        }
 
     }
 }

@@ -25,6 +25,9 @@ namespace Blog.Data.Mappings
                    .IsRequired()
                    .HasColumnType("varchar(100)");
 
+            builder.Property(c => c.IdAutor)
+                   .IsRequired();
+
             builder.Property(c => c.IdPostagem)
                    .IsRequired();
 

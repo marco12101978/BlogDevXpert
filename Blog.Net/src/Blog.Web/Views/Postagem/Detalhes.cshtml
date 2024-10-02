@@ -34,7 +34,7 @@
                                     <p class="comment-meta">
                                         <small>Por <strong>@comentario.NomeAutor</strong> em @comentario.DataPostagem?.ToString("dd/MM/yyyy")</small>
                                     </p>
-                                    @if (userId == comentario?.Id || isAdmin)
+                                    @if (userId == comentario?.IdAutor || isAdmin)
                                     {
                                         <a href="@Url.Action("Editar", "Comentario", new { id = comentario.Id })" class="btn btn-primary btn-sm">Editar</a>
                                         <a href="@Url.Action("Delete", "Comentario", new { id = comentario.Id })" class="btn btn-danger btn-sm">Excluir</a>

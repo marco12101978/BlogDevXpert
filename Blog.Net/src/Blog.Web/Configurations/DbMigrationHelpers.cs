@@ -178,6 +178,7 @@ namespace Blog.Web.Configurations
             {
                 Id = Guid.NewGuid(),
                 NomeAutor = "Jose da Silva",
+                IdAutor = idAutor,
                 DataPostagem = DateTime.Now.AddDays(-1),
                 IdPostagem = idPostagem1,
                 Conteudo = "Excelente artigo! Estava procurando exatamente por isso. As dicas que você deu serão muito úteis para o meu próximo projeto. Parabéns pelo conteúdo de qualidade!"
@@ -189,6 +190,7 @@ namespace Blog.Web.Configurations
             {
                 Id = Guid.NewGuid(),
                 NomeAutor = "Carlos Mendes",
+                IdAutor = idAutor,
                 DataPostagem = DateTime.Now.AddDays(-1),
                 IdPostagem = idPostagem1,
                 Conteudo = "Gostei muito da forma como você abordou o tema. É sempre bom ver conteúdo técnico bem explicado e de fácil compreensão. Continue com o ótimo trabalho!"
@@ -199,6 +201,7 @@ namespace Blog.Web.Configurations
             {
                 Id = Guid.NewGuid(),
                 NomeAutor = "João Pereira",
+                IdAutor = idAutor,
                 DataPostagem = DateTime.Now.AddDays(-1),
                 IdPostagem = idPostagem1,
                 Conteudo = "Achei a explicação um pouco confusa em alguns pontos, mas com certeza agregou valor ao que eu já sabia. Vou continuar acompanhando seu blog para aprender mais."
@@ -210,6 +213,7 @@ namespace Blog.Web.Configurations
             {
                 Id = Guid.NewGuid(),
                 NomeAutor = "Ana Costa",
+                IdAutor = idAutor,
                 DataPostagem = DateTime.Now,
                 IdPostagem = idPostagem1,
                 Conteudo = "Uau, adorei o post! Consegui entender de maneira clara conceitos que sempre achei complicados. Obrigada por compartilhar esse conhecimento."
@@ -221,6 +225,7 @@ namespace Blog.Web.Configurations
             {
                 Id = Guid.NewGuid(),
                 NomeAutor = "Lucas Oliveira",
+                IdAutor = idAutor,
                 DataPostagem = DateTime.Now,
                 IdPostagem = idPostagem1,
                 Conteudo = "O conteúdo está bem completo, mas acho que seria interessante incluir exemplos práticos para facilitar o entendimento. De qualquer forma, excelente artigo!"
@@ -236,6 +241,7 @@ namespace Blog.Web.Configurations
             {
                 Id = Guid.NewGuid(),
                 NomeAutor = "Fernanda Rocha",
+                IdAutor = idAutor,
                 DataPostagem = DateTime.Now.AddDays(-2),
                 IdPostagem = idPostagem2,
                 Conteudo = "Artigo incrível! As informações são super relevantes e a maneira como você explicou tudo faz com que seja fácil de entender. Estou ansiosa para aplicar essas dicas!"
@@ -247,6 +253,7 @@ namespace Blog.Web.Configurations
             {
                 Id = Guid.NewGuid(),
                 NomeAutor = "Ricardo Almeida",
+                IdAutor = idAutor,
                 DataPostagem = DateTime.Now.AddDays(-1),
                 IdPostagem = idPostagem2,
                 Conteudo = "Gostei bastante do seu ponto de vista. É sempre bom ter diferentes perspectivas sobre o assunto. Vou compartilhar com meus colegas!"
@@ -258,6 +265,7 @@ namespace Blog.Web.Configurations
             {
                 Id = Guid.NewGuid(),
                 NomeAutor = "Sofia Martins",
+                IdAutor = idAutor,
                 DataPostagem = DateTime.Now.AddDays(-2),
                 IdPostagem = idPostagem2,
                 Conteudo = "Ótima leitura! Achei os gráficos e imagens que você usou muito úteis para complementar o texto. Isso realmente ajuda a visualizar as informações."
@@ -273,6 +281,7 @@ namespace Blog.Web.Configurations
             {
                 Id = Guid.NewGuid(),
                 NomeAutor = "Eduardo Lima",
+                IdAutor = idAutor,
                 DataPostagem = DateTime.Now.AddDays(-4),
                 IdPostagem = idPostagem3,
                 Conteudo = "Parabéns pelo conteúdo! Você sempre traz temas interessantes e bem pesquisados. Espero que continue postando regularmente!"
@@ -283,6 +292,7 @@ namespace Blog.Web.Configurations
             {
                 Id = Guid.NewGuid(),
                 NomeAutor = "Tatiane Sousa",
+                IdAutor = idAutor,
                 DataPostagem = DateTime.Now.AddDays(-3),
                 IdPostagem = idPostagem3,
                 Conteudo = "Esse artigo chegou na hora certa! Estava com dificuldades em entender alguns conceitos e você conseguiu esclarecer tudo de forma simples. Muito obrigada!"

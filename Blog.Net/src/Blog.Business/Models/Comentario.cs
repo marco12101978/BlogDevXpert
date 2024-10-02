@@ -16,6 +16,8 @@ namespace Blog.Business.Models
 
         public string? NomeAutor { get; set; }
 
+        public Guid IdAutor { get; set; }
+
         public Guid IdPostagem { get; set; }
 
         public Postagem? Postagem { get; set; }

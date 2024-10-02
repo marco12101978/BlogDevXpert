@@ -19,6 +19,10 @@ namespace Blog.Business.Models.Validations
                 .NotEmpty().WithMessage("O campo {PropertyName} precisa ser fornecido")
                 .Length(3, 100).WithMessage("{PropertyName} deve ter entre {MinLength} e {MaxLength} caracteres");
 
+            RuleFor(c => c.IdAutor)
+                .NotEmpty().WithMessage("O campo {PropertyName} precisa ser fornecido")
+                .NotEqual(Guid.Empty).WithMessage("{PropertyName} precisa ser um GUID válido");
+
             RuleFor(c => c.IdPostagem)
                 .NotEmpty().WithMessage("O campo {PropertyName} precisa ser fornecido")
                 .NotEqual(Guid.Empty).WithMessage("{PropertyName} precisa ser um GUID válido");
