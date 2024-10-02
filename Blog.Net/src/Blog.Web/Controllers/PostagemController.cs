@@ -38,6 +38,9 @@ namespace Blog.Web.Controllers
 
             if (_autor == null || !_autor.Any())
             {
+                var xx = UserName;
+                var xxxx = UserId ;
+
                 return NotFound($"Nenhum autor encontrado. {UserId}-{UserName}"); 
             }
 
@@ -116,6 +119,9 @@ namespace Blog.Web.Controllers
         [Route("dados-da-postagem/{id:guid}")]
         public async Task<IActionResult> Detalhes(Guid id)
         {
+            ViewBag.IdUser = UserId;
+            ViewBag.Admin = UserAdmin;
+
             var postagem = await _repository.ObterPostagem(id);
 
             if (postagem == null)

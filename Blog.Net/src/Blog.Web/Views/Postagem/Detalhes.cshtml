@@ -3,7 +3,10 @@
 
 @{
     ViewBag.Title = Model.Titulo;
+    var userId = @ViewBag.IdUser ?? Guid.Empty;
+    var isAdmin = @ViewBag.Admin ?? false;
 }
+
 
 <div class="container post-details">
     <div class="row">
@@ -31,8 +34,16 @@
                                     <p class="comment-meta">
                                         <small>Por <strong>@comentario.NomeAutor</strong> em @comentario.DataPostagem?.ToString("dd/MM/yyyy")</small>
                                     </p>
-                                    <a href="@Url.Action("Editar", "Comentario", new { id = comentario.Id })" class="btn btn-primary btn-sm">Editar</a>
-                                    <a href="@Url.Action("Delete", "Comentario", new { id = comentario.Id })" class="btn btn-danger btn-sm">Excluir</a>
+                                    @if (userId == comentario?.Id || isAdmin)
+                                    {
+                                        <a href="@Url.Action("Editar", "Comentario", new { id = comentario.Id })" class="btn btn-primary btn-sm">Editar</a>
+                                        <a href="@Url.Action("Delete", "Comentario", new { id = comentario.Id })" class="btn btn-danger btn-sm">Excluir</a>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-secondary btn-sm" disabled>Editar</button>
+                                        <button class="btn btn-secondary btn-sm" disabled>Excluir</button>
+                                    }
                                 </li>
                             }
                         </ul>
@@ -43,7 +54,14 @@
                     }
                 </section>
                 <div style="text-align: center;margin-bottom: 20px;">
-                    <a href="@Url.Action("Create", "Postagem", new { area = "" })" class="btn btn-primary btn-lg"> + Novo Comentário</a>
+                            @if (userId != Guid.Empty)
+                    {
+                        <a href="@Url.Action("Create", "Postagem", new { area = "" })" class="btn btn-primary btn-lg"> + Novo Comentário</a>
+                    }
+                    else
+                    {
+                        <button class="btn btn-secondary btn-lg" disabled>  + Novo Comentário</button>
+                    }
                 </div>
                 <div>
                     <a asp-action="Index">Voltar</a>
