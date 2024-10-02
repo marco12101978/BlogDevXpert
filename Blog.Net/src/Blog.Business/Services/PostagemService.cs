@@ -15,7 +15,7 @@ namespace Blog.Business.Services
 
         public PostagemService(IPostagemRepository postagemrepository, INotificador notificador) : base(notificador)
         {
-            if (!ExecutarValidacao(new AutorValidation(), autor)) return;
+             //if (!ExecutarValidacao(new AutorValidation(), Autor)) return;
             _postagemrepository = postagemrepository;
         }
 
