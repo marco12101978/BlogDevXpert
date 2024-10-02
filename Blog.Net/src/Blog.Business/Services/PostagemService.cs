@@ -1,5 +1,6 @@
 ﻿using Blog.Business.Intefaces;
 using Blog.Business.Models;
+using Blog.Business.Models.Validations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace Blog.Business.Services
 
         public PostagemService(IPostagemRepository postagemrepository, INotificador notificador) : base(notificador)
         {
+            if (!ExecutarValidacao(new AutorValidation(), autor)) return;
             _postagemrepository = postagemrepository;
         }
 

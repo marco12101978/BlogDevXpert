@@ -39,7 +39,7 @@ namespace Blog.Business.Services
 
         public void Dispose()
         {
-            _comentarioRepository.Dispose();
+            _comentarioRepository?.Dispose();
         }
     }
 }
