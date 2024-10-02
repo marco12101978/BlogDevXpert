@@ -34,6 +34,14 @@ namespace Blog.Business.Services
 
         public async Task Remover(Guid id)
         {
+            var autor = await _comentarioRepository.ObterPorId(id);
+
+            if (autor == null)
+            {
+                Notificar("Postagem não existe!");
+                return;
+            }
+
             await _comentarioRepository.Remover(id);
         }
 

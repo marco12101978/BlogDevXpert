@@ -9,8 +9,8 @@ namespace Blog.Business.Intefaces
 {
     public interface IPostagemService : IDisposable
     {
-        Task Adicionar(Comentario comentario);
-        Task Atualizar(Comentario comentario);
+        Task Adicionar(Postagem comentario);
+        Task Atualizar(Postagem comentario);
         Task Remover(Guid id);
     }
 }

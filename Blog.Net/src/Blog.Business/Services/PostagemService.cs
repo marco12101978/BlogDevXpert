@@ -15,28 +15,39 @@ namespace Blog.Business.Services
 
         public PostagemService(IPostagemRepository postagemrepository, INotificador notificador) : base(notificador)
         {
-             //if (!ExecutarValidacao(new AutorValidation(), Autor)) return;
+
             _postagemrepository = postagemrepository;
         }
 
-        public Task Adicionar(Comentario comentario)
+        public async Task Adicionar(Postagem postagem)
         {
-            throw new NotImplementedException();
+            if (!ExecutarValidacao(new PostagemValidation(), postagem)) return;
+
+            await _postagemrepository.Adicionar(postagem);
         }
 
-        public Task Atualizar(Comentario comentario)
+        public async Task Atualizar(Postagem postagem)
         {
-            throw new NotImplementedException();
+            if (!ExecutarValidacao(new PostagemValidation(), postagem)) return;
+
+            await _postagemrepository.Atualizar(postagem);
         }
 
-        public Task Remover(Guid id)
+        public async Task Remover(Guid id)
         {
-            throw new NotImplementedException();
+            var autor = await _postagemrepository.ObterPorId(id);
+
+            if (autor == null)
+            {
+                Notificar("Postagem não existe!");
+                return;
+            }
+            await _postagemrepository.Remover(id);
         }
 
         public void Dispose()
         {
-            _postagemrepository.Dispose();
+            _postagemrepository?.Dispose();
         }
     }
 }
