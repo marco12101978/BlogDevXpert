@@ -12,8 +12,8 @@ namespace Blog.Web.Controllers
     public class PostagemController : BaseController
     {
 
-        private readonly IPostagemRepository _repository;
-        private readonly IPostagemService _service;
+        private readonly IPostagemRepository _postagemRepository;
+        private readonly IPostagemService _postagemService;
 
         private readonly IAutorRepository _autorRepository;
         private readonly IAutorService _autorService;
@@ -25,8 +25,8 @@ namespace Blog.Web.Controllers
                                   INotificador notificador,
                                   IAppIdentityUser user) : base(notificador, user)
         {
-            _repository = repository;
-            _service = service;
+            _postagemRepository = repository;
+            _postagemService = service;
 
             _autorRepository = autorRepository;
             _autorService = autorService;
@@ -41,7 +41,7 @@ namespace Blog.Web.Controllers
             ViewBag.IdUser = UserId;
             ViewBag.Admin = UserAdmin;
 
-            var posts = await _repository.ObterTodasPostagem();
+            var posts = await _postagemRepository.ObterTodasPostagem();
             return View(posts);
 
         }
@@ -54,7 +54,7 @@ namespace Blog.Web.Controllers
             ViewBag.IdUser = UserId;
             ViewBag.Admin = UserAdmin;
 
-            var postagem = await _repository.ObterPostagem(id);
+            var postagem = await _postagemRepository.ObterPostagem(id);
 
             if (postagem == null)
             {
@@ -105,7 +105,7 @@ namespace Blog.Web.Controllers
                 postagem.DataCriacao = DateTime.Now;
                 postagem.IdAutor = UserId;
 
-                await _repository.Adicionar(postagem);
+                await _postagemService.Adicionar(postagem);
 
                 return RedirectToAction("Index");
 
@@ -119,7 +119,7 @@ namespace Blog.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var postagem = await _repository.ObterPorId(id);
+            var postagem = await _postagemRepository.ObterPorId(id);
             if (postagem == null)
             {
                 return NotFound();
@@ -134,13 +134,13 @@ namespace Blog.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmado(Guid id)
         {
-            var postagem = await _repository.ObterPorId(id);
+            var postagem = await _postagemRepository.ObterPorId(id);
             if (postagem == null)
             {
                 return NotFound();
             }
 
-            await _repository.Remover(id);
+            await _postagemService.Remover(id);
 
             return RedirectToAction("Index");
         }
