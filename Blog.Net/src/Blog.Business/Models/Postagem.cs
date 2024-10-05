@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Blog.Business.Models
 {
@@ -15,8 +9,12 @@ namespace Blog.Business.Models
 
         public string? Conteudo { get; set; }
 
+        [Display(Name = "Data Postagem")]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy HH:mm:ss}")]
         public DateTime? DataCriacao { get; set; }
 
+        [Display(Name = "Data Atualização")]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy HH:mm:ss}")]
         public DateTime? DataAtualizacao { get; set; }
 
         public Guid IdAutor { get; set; }

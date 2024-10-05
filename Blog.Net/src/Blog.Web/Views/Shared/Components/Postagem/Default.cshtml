@@ -42,11 +42,11 @@
                             <p>@(postagem.Conteudo?.Length > 200 ? postagem.Conteudo.Substring(0, 200) + "..." : postagem.Conteudo)</p>
                         </div>
                         <footer class="card-footer">
-                            <a href="@Url.Action("Detalhes", "Postagem", new { id = postagem.Id })" class="btn btn-primary">Leia Mais</a>
+                            <a href="@Url.Action("Details", "Postagem", new { id = postagem.Id })" class="btn btn-primary">Leia Mais</a>
                             @if (userId == postagem?.IdAutor || isAdmin)
                             {
-                                <a href="@Url.Action("Editar"  , "Postagem", new { id = postagem?.Id })" class="btn btn-primary">Editar</a>
-                                <a href="@Url.Action("Excluir"  , "Postagem", new { id = postagem?.Id })" class="btn btn-danger">Excluir</a>
+                                <a href="@Url.Action("Edit"  , "Postagem", new { id = postagem?.Id })" class="btn btn-primary">Editar</a>
+                                <a href="@Url.Action("Delete"  , "Postagem", new { id = postagem?.Id })" class="btn btn-danger">Excluir</a>
                             }
                             else
                             {

@@ -1,10 +1,8 @@
 ﻿using Blog.Business.Intefaces;
 using Blog.Business.Models;
-using Blog.Data.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 
 namespace Blog.Web.Controllers
@@ -49,7 +47,7 @@ namespace Blog.Web.Controllers
         [AllowAnonymous]
         [HttpGet]
         [Route("dados-da-postagem/{id:guid}")]
-        public async Task<IActionResult> Detalhes(Guid id)
+        public async Task<IActionResult> Details(Guid id)
         {
             ViewBag.IdUser = UserId;
             ViewBag.Admin = UserAdmin;
@@ -114,8 +112,62 @@ namespace Blog.Web.Controllers
         }
 
 
+        public async Task<IActionResult> Edit(Guid? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-        [Authorize(Roles = "Admin")]
+            Postagem postagem = await _postagemRepository.ObterPostagem(Guid.Parse(id.ToString()));
+            if (postagem == null)
+            {
+                return NotFound();
+            }
+            ViewData["IdAutor"] = new SelectList(await _autorRepository.ObterTodos(), "Id", "Email", postagem.IdAutor);
+            return View(postagem);
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(Guid id, [Bind("Titulo,Conteudo,DataCriacao,DataAtualizacao,IdAutor,Id")] Postagem postagem)
+        {
+            if (id != postagem.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    postagem.DataAtualizacao = DateTime.Now;
+                    await _postagemRepository.Atualizar(postagem);
+
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!PostagemExists(postagem.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["IdAutor"] = new SelectList(await _autorRepository.ObterTodos(), "Id", "Email", postagem.IdAutor);
+            return View(postagem);
+        }
+
+
+
+
+        [Authorize]
+        [HttpPost, ActionName("Delete")]
         [HttpGet]
         public async Task<IActionResult> Delete(Guid id)
         {
@@ -129,7 +181,6 @@ namespace Blog.Web.Controllers
         }
 
 
-        [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("DeleteConfirmado")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmado(Guid id)
@@ -147,6 +198,10 @@ namespace Blog.Web.Controllers
 
 
 
+        private bool PostagemExists(Guid id)
+        {
+            return _postagemRepository.ObterPostagem(id) != null ? true : false;
+        }
 
 
     }

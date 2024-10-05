@@ -12,6 +12,8 @@ namespace Blog.Business.Models
     {
         public string? Conteudo { get; set; }
 
+        [Display(Name = "Data Postagem")]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy HH:mm:ss}")]
         public DateTime? DataPostagem { get; set; }
 
         public string? NomeAutor { get; set; }
