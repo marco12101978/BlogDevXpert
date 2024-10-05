@@ -1,7 +1,11 @@
 ﻿@model Blog.Business.Models.Comentario
 
 @{
+
     ViewData["Title"] = "Criar Comentário";
+
+    var idPostagem = ViewData["IdPostagem"];
+   
 }
 
 <div class="container mt-4">
@@ -13,19 +17,14 @@
                 <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
                 <div class="form-group">
-                    <label asp-for="DataPostagem" class="control-label"></label>
-                    <input asp-for="DataPostagem" class="form-control" type="datetime-local" />
-                    <span asp-validation-for="DataPostagem" class="text-danger"></span>
-                </div>
-
-                <div class="form-group">
                     <label asp-for="Conteudo" class="control-label"></label>
                     <textarea asp-for="Conteudo" class="form-control"></textarea>
                     <span asp-validation-for="Conteudo" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="IdPostagem" class="control-label"></label>
-                    <select asp-for="IdPostagem" class="form-control" asp-items="ViewBag.IdPostagem"></select>
+                    <input asp-for="IdPostagem" class="form-control" type="text" value="@idPostagem" />
+                    <span asp-validation-for="IdPostagem" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">

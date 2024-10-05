@@ -67,15 +67,13 @@ namespace Blog.Web.Controllers
 
         [Authorize]
         [HttpGet]
-        [Route("novo-comentario")]
-        public IActionResult Create(Guid idPostagem)
+        [Route("novo-comentario/{id:guid}")]
+        public IActionResult Create([FromRoute(Name = "id")] Guid idPostagem)
         {
-            if (idPostagem == Guid.Empty)
-                return BadRequest();
+            //ViewData["IdPostagem"] = idPostagem.ToString();
 
+            ViewBag.IdPostagem = idPostagem.ToString();
 
-
-            ViewData["IdPostagem"] = idPostagem;
             return View();
         }
 

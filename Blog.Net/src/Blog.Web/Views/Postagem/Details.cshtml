@@ -5,6 +5,8 @@
     ViewBag.Title = Model.Titulo;
     var userId = @ViewBag.IdUser ?? Guid.Empty;
     var isAdmin = @ViewBag.Admin ?? false;
+
+    var idPostagem = Model.Id;
 }
 
 
@@ -54,9 +56,17 @@
                     }
                 </section>
                 <div style="text-align: center;margin-bottom: 20px;">
-                            @if (userId != Guid.Empty)
+                    
+                    @if (idPostagem != Guid.Empty)
                     {
-                        <a href="@Url.Action("Create", "Postagem", new { area = "" })" class="btn btn-primary btn-lg"> + Novo Comentário</a>
+                        @if (Model.Id != Guid.Empty)
+                        {
+                            <a href="@Url.Action("Create", "Comentarios", new { id = idPostagem })" class="btn btn-primary btn-lg"> + Novo Comentário</a>
+                        }
+                        else
+                        {
+                            <p>Id da postagem não está disponível.</p>
+                        }
                     }
                     else
                     {

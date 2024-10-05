@@ -1,5 +1,7 @@
 ﻿using Blog.Business.Intefaces;
 using Blog.Business.Models;
+using Blog.Business.Services;
+using Blog.Data.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -113,8 +115,8 @@ namespace Blog.Web.Controllers
 
 
         [Authorize]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        [HttpGet, ActionName("Edit")]
+        //[Route("editar-postagem/{id:guid}")]
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
@@ -127,9 +129,9 @@ namespace Blog.Web.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdAutor"] = new SelectList(await _autorRepository.ObterTodos(), "Id", "Email", postagem.IdAutor);
             return View(postagem);
         }
+
 
         [Authorize]
         [HttpPost]
@@ -167,11 +169,9 @@ namespace Blog.Web.Controllers
         }
 
 
-
-
         [Authorize]
-        [HttpPost, ActionName("Delete")]
-        [HttpGet]
+        [HttpGet, ActionName("Delete")]
+        [Route("excluir-postagem/{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var postagem = await _postagemRepository.ObterPorId(id);
