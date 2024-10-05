@@ -1,5 +1,6 @@
 ﻿using Blog.Business.Models;
 using Blog.Data.Context;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -43,7 +44,7 @@ namespace Blog.Web.Controllers
             return View();
         }
 
-
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Nome,Email,Biografia,Id")] Autor autor)
@@ -73,7 +74,7 @@ namespace Blog.Web.Controllers
             return View(autor);
         }
 
-
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, [Bind("Nome,Email,Biografia,Id")] Autor autor)
@@ -106,6 +107,7 @@ namespace Blog.Web.Controllers
             return View(autor);
         }
 
+        [Authorize]
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
@@ -123,7 +125,7 @@ namespace Blog.Web.Controllers
             return View(autor);
         }
 
-
+        [Authorize]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)

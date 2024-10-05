@@ -11,15 +11,17 @@
 <div class="row">
     <div class="col-md-8">
         <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
             <div class="form-group">
                 <label asp-for="IdAutor" class="control-label"></label>
                 <input asp-for="IdAutor" class="form-control" readonly />
-                <span asp-validation-for="Titulo" class="text-danger"></span>
+                <span asp-validation-for="IdAutor" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="DataCriacao" class="control-label"></label>
                 <input asp-for="DataCriacao" class="form-control" readonly />
-                <span asp-validation-for="Titulo" class="text-danger"></span>
+                <span asp-validation-for="DataCriacao" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Titulo" class="control-label"></label>
@@ -28,20 +30,16 @@
             </div>
             <div class="form-group">
                 <label asp-for="Conteudo" class="control-label"></label>
-                <textarea asp-for="Conteudo" class="form-control" rows="5"></textarea>
+                <textarea asp-for="Conteudo" class="form-control" rows="10"></textarea>
                 <span asp-validation-for="Conteudo" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group mt-3">
                 <input type="submit" value="Salvar" class="btn btn-primary" />
                 <a asp-action="Index" class="btn btn-danger">Cancelar</a>
             </div>
         </form>
     </div>
 </div>
-
-@* <div>
-    <a asp-action="Index">Voltar</a>
-</div> *@
 
 @section Scripts {
     @{

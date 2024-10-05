@@ -112,6 +112,9 @@ namespace Blog.Web.Controllers
         }
 
 
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)

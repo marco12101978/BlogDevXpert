@@ -20,17 +20,12 @@ namespace Blog.Data.Repository
         }
 
 
-        public async Task<Postagem> ObterPostagem(Guid postagemId)
+        public async Task<Postagem?> ObterPostagem(Guid postagemId)
         {
             return await Db.Postagens.AsNoTracking()
                                      .Include(p => p.Autor)
                                      .Include(p => p.Comentarios)
                                      .FirstOrDefaultAsync(p => p.Id == postagemId);
-
-
-            //return await Db.Postagens.AsNoTracking()
-            //             .Include(p => p.Autor)
-            //             .FirstOrDefaultAsync(p => p.Id == postagemId);
 
 
         }

@@ -1,28 +1,48 @@
-﻿using Blog.Business.Models;
-using Blog.Data.Context;
+﻿using Blog.Business.Intefaces;
+using Blog.Business.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace Blog.Web.Controllers
 {
-    public class ComentariosController : Controller
+    public class ComentariosController : BaseController
     {
-        private readonly MeuDbContext _context;
+        private readonly IComentarioRepository _comentarioRepository;
+        private readonly IComentarioService _comentarioService;
 
-        public ComentariosController(MeuDbContext context)
+        private readonly IAutorRepository _autorRepository;
+        private readonly IAutorService _autorService;
+
+        public ComentariosController(IComentarioRepository repository,
+                                     IComentarioService service,
+                                     IAutorRepository autorRepository,
+                                     IAutorService autorService,
+                                     INotificador notificador,
+                                     IAppIdentityUser user) : base(notificador, user)
         {
-            _context = context;
+            _comentarioRepository = repository;
+            _comentarioService = service;
+
+            _autorRepository = autorRepository;
+            _autorService = autorService;
         }
 
-        // GET: Comentarios
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("lista-de-comentarios")]
         public async Task<IActionResult> Index()
         {
-            var meuDbContext = _context.Comentarios.Include(c => c.Postagem);
-            return View(await meuDbContext.ToListAsync());
+            ViewBag.IdUser = UserId;
+            ViewBag.Admin = UserAdmin;
+
+            var posts = await _comentarioRepository.ObterTodos();
+            return View(posts);
         }
 
-        // GET: Comentarios/Details/5
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("dados-do-comentario/{id:guid}")]
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
@@ -30,44 +50,56 @@ namespace Blog.Web.Controllers
                 return NotFound();
             }
 
-            var comentario = await _context.Comentarios
-                .Include(c => c.Postagem)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            ViewBag.IdUser = UserId;
+            ViewBag.Admin = UserAdmin;
+
+
+            Comentario comentario = _comentarioRepository.ObterComentario(id ?? Guid.Empty).Result;
 
             if (comentario == null)
             {
                 return NotFound();
             }
 
+            ViewData["Title"] = "Excluir Comentário";
             return View(comentario);
         }
 
-        // GET: Comentarios/Create
-        public IActionResult Create()
+        [Authorize]
+        [HttpGet]
+        [Route("novo-comentario")]
+        public IActionResult Create(Guid idPostagem)
         {
-            ViewData["IdPostagem"] = new SelectList(_context.Postagens, "Id", "Conteudo");
+            if (idPostagem == Guid.Empty)
+                return BadRequest();
+
+
+
+            ViewData["IdPostagem"] = idPostagem;
             return View();
         }
 
-        // POST: Comentarios/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Route("novo-comentario")]
         public async Task<IActionResult> Create([Bind("Conteudo,DataPostagem,NomeAutor,IdAutor,IdPostagem,Id")] Comentario comentario)
         {
             if (ModelState.IsValid)
             {
                 comentario.Id = Guid.NewGuid();
-                _context.Add(comentario);
-                await _context.SaveChangesAsync();
+
+                await _comentarioService.Adicionar(comentario);
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdPostagem"] = new SelectList(_context.Postagens, "Id", "Conteudo", comentario.IdPostagem);
+            ViewData["IdPostagem"] = Guid.NewGuid().ToString();
             return View(comentario);
         }
 
-        // GET: Comentarios/Edit/5
+        [Authorize]
+        [HttpGet]
+        [Route("editar-comentario/{id:guid}")]
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
@@ -75,20 +107,19 @@ namespace Blog.Web.Controllers
                 return NotFound();
             }
 
-            var comentario = await _context.Comentarios.FindAsync(id);
+            var comentario = await _comentarioRepository.ObterPorId(id ?? Guid.Empty);
             if (comentario == null)
             {
                 return NotFound();
             }
-            ViewData["IdPostagem"] = new SelectList(_context.Postagens, "Id", "Conteudo", comentario.IdPostagem);
+
             return View(comentario);
         }
 
-        // POST: Comentarios/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Route("editar-comentario/{id:guid}")]
         public async Task<IActionResult> Edit(Guid id, [Bind("Conteudo,DataPostagem,NomeAutor,IdAutor,IdPostagem,Id")] Comentario comentario)
         {
             if (id != comentario.Id)
@@ -100,8 +131,15 @@ namespace Blog.Web.Controllers
             {
                 try
                 {
-                    _context.Update(comentario);
-                    await _context.SaveChangesAsync();
+                    var _comentarioDB = _comentarioRepository.ObterPorId(id).Result;
+
+                    if (_comentarioDB != null)
+                    {
+                        _comentarioDB.Conteudo = comentario.Conteudo;
+                    }
+
+                    await _comentarioService.Atualizar(_comentarioDB);
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -116,11 +154,13 @@ namespace Blog.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdPostagem"] = new SelectList(_context.Postagens, "Id", "Conteudo", comentario.IdPostagem);
+            ViewData["IdPostagem"] = id.ToString() ;
             return View(comentario);
         }
 
-        // GET: Comentarios/Delete/5
+        [Authorize]
+        [HttpGet]
+        [Route("deletar-comentario/{id:guid}")]
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
@@ -128,9 +168,8 @@ namespace Blog.Web.Controllers
                 return NotFound();
             }
 
-            var comentario = await _context.Comentarios
-                .Include(c => c.Postagem)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            Comentario comentario = _comentarioRepository.ObterComentario(id ?? Guid.Empty).Result;
+
             if (comentario == null)
             {
                 return NotFound();
@@ -139,24 +178,25 @@ namespace Blog.Web.Controllers
             return View(comentario);
         }
 
-        // POST: Comentarios/Delete/5
+        [Authorize]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Route("deletar-comentario/{id:guid}")]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var comentario = await _context.Comentarios.FindAsync(id);
+            var comentario = await _comentarioRepository.ObterPorId(id);
             if (comentario != null)
             {
-                _context.Comentarios.Remove(comentario);
+                await _comentarioService.Remover(comentario.Id);
+                return RedirectToAction("Details", "Postagem", new { id = comentario.IdPostagem });
             }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", "Postagem");
         }
 
         private bool ComentarioExists(Guid id)
         {
-            return _context.Comentarios.Any(e => e.Id == id);
+            return _comentarioRepository.ObterPorId(id) != null ? true : false;
         }
     }
 }
