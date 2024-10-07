@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using Blog.Business.Models;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Blog.Business.Models
+namespace Blog.Web.ViewModels
 {
-    public class Comentario : Entity
+    public class ComentarioViewModel
     {
+        //[Required(ErrorMessage = "O campo {0} é obrigatório")]
+        //[StringLength(100, ErrorMessage = "O campo {0} precisa ter entre {2} e {1} caracteres", MinimumLength = 2)]
         public string? Conteudo { get; set; }
+
 
         [Display(Name = "Data Postagem")]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy HH:mm:ss}")]
