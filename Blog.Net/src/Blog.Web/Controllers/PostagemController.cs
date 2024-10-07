@@ -116,7 +116,7 @@ namespace Blog.Web.Controllers
 
         [Authorize]
         [HttpGet, ActionName("Edit")]
-        //[Route("editar-postagem/{id:guid}")]
+        [Route("editar-postagem/{id:guid}")]
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
@@ -136,6 +136,7 @@ namespace Blog.Web.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Route("editar-postagem/{id:guid}")]
         public async Task<IActionResult> Edit(Guid id, [Bind("Titulo,Conteudo,DataCriacao,DataAtualizacao,IdAutor,Id")] Postagem postagem)
         {
             if (id != postagem.Id)
@@ -186,6 +187,7 @@ namespace Blog.Web.Controllers
 
         [HttpPost, ActionName("DeleteConfirmado")]
         [ValidateAntiForgeryToken]
+        [Route("excluir-postagem/{id:guid}")]
         public async Task<IActionResult> DeleteConfirmado(Guid id)
         {
             var postagem = await _postagemRepository.ObterPorId(id);

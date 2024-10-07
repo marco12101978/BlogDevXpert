@@ -1,5 +1,6 @@
 ﻿using Blog.Business.Intefaces;
 using Blog.Business.Models;
+using Blog.Business.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -68,20 +69,19 @@ namespace Blog.Web.Controllers
         [Authorize]
         [HttpGet]
         [Route("novo-comentario/{id:guid}")]
-        public IActionResult Create([FromRoute(Name = "id")] Guid idPostagem)
+        public IActionResult Create(Guid id)
         {
-            //ViewData["IdPostagem"] = idPostagem.ToString();
-
-            ViewBag.IdPostagem = idPostagem.ToString();
+            ViewBag.Id = id.ToString();
 
             return View();
         }
 
+
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("novo-comentario")]
-        public async Task<IActionResult> Create([Bind("Conteudo,DataPostagem,NomeAutor,IdAutor,IdPostagem,Id")] Comentario comentario)
+        [Route("novo-comentario/{id:guid}")]
+        public async Task<IActionResult> Create([Bind("Conteudo,Id")] Comentario comentario)
         {
             if (ModelState.IsValid)
             {

@@ -11,12 +11,5 @@ namespace Blog.Data.Repository
         {
         }
 
-        public async Task<Autor> ObterPostagem(Guid id)
-        {
-            // return await Buscar(p => p.Id == id);
-
-            return await Db.Autores.AsNoTracking().Include(f => f.Id).FirstOrDefaultAsync(p => p.Id == id);
-
-        }
     }
 }
