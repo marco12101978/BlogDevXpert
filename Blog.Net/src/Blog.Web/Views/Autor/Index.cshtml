@@ -2,6 +2,8 @@
 
 @{
     ViewData["Title"] = "Lista de Autores";
+    var userId = @ViewBag.IdUser ?? Guid.Empty;
+    var isAdmin = @ViewBag.Admin ?? false;
 }
 
 <div class="container mt-4">
@@ -30,9 +32,25 @@
                             <td>@Html.DisplayFor(modelItem => item.Email)</td>
                             <td>@Html.DisplayFor(modelItem => item.Biografia)</td>
                             <td class="text-center">
-                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Editar</a>
-                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Detalhes</a>
-                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Deletar</a>
+                                @if (userId == item?.Id || isAdmin)
+                                {
+                                    <a asp-action="Edit" asp-route-id="@item?.Id" class="btn btn-warning btn-sm">Editar</a>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-secondary" disabled>Editar</button>
+                                }
+                                <a asp-action="Details" asp-route-id="@item?.Id" class="btn btn-primary btn-sm">Detalhes</a>
+
+                                @if (userId == item?.Id || isAdmin)
+                                {
+                                    <a asp-action="Delete" asp-route-id="@item?.Id" class="btn btn-danger btn-sm">Deletar</a>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-secondary" disabled>Excluir</button>
+                                }
+
                             </td>
                         </tr>
                     }

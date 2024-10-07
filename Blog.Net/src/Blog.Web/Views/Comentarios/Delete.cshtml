@@ -5,6 +5,8 @@
      ViewData["Title"] = "Excluir Comentário";
 }
 
+@await Component.InvokeAsync("Summary")
+
 <div class="container mt-4">
     <h1 class="text-danger">@ViewData["Title"]</h1>
 

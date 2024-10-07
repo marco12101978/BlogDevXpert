@@ -84,8 +84,6 @@ namespace Blog.Web.Controllers
 
 
                 await _autorService.Adicionar(_insAutor);
-
-                //return NotFound($"Nenhum autor encontrado. {UserId}-{UserName}"); 
             }
 
             return View();
@@ -125,6 +123,13 @@ namespace Blog.Web.Controllers
             }
 
             Postagem postagem = await _postagemRepository.ObterPostagem(Guid.Parse(id.ToString()));
+
+            if (UserAdmin == false && UserId != postagem.IdAutor)
+            {
+                return Unauthorized();
+            }
+
+
             if (postagem == null)
             {
                 return NotFound();
@@ -143,6 +148,12 @@ namespace Blog.Web.Controllers
             {
                 return NotFound();
             }
+
+            if (UserAdmin == false && UserId != postagem.IdAutor)
+            {
+                return Unauthorized();
+            }
+
 
             if (ModelState.IsValid)
             {
@@ -181,6 +192,12 @@ namespace Blog.Web.Controllers
                 return NotFound();
             }
 
+            if (UserAdmin == false && UserId != postagem.IdAutor)
+            {
+                return Unauthorized();
+            }
+
+
             return View(postagem); 
         }
 
@@ -195,6 +212,12 @@ namespace Blog.Web.Controllers
             {
                 return NotFound();
             }
+
+            if (UserAdmin == false && UserId != postagem.IdAutor)
+            {
+                return Unauthorized();
+            }
+
 
             await _postagemService.Remover(id);
 

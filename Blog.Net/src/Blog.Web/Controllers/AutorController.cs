@@ -92,10 +92,17 @@ namespace Blog.Web.Controllers
             }
 
             var autor = await _autorRepository.ObterPorId(id ?? Guid.Empty);
+
             if (autor == null)
             {
                 return NotFound();
             }
+
+            if (UserAdmin == false && UserId != autor.Id)
+            {
+                return Unauthorized();
+            }
+
             return View(autor);
         }
 
@@ -115,6 +122,11 @@ namespace Blog.Web.Controllers
                 try
                 {
                     var _autorDB = _autorRepository.ObterPorId(id).Result;
+
+                    if (UserAdmin == false && UserId != autor.Id)
+                    {
+                        return Unauthorized();
+                    }
 
                     await _autorRepository.Atualizar(_autorDB);
                 }
@@ -169,6 +181,11 @@ namespace Blog.Web.Controllers
             var autor = await _autorRepository.ObterPorId(id);
             if (autor != null)
             {
+                if (UserAdmin == false && UserId != autor.Id)
+                {
+                    return Unauthorized();
+                }
+
                 await _autorRepository.Remover(autor.Id);
             }
 

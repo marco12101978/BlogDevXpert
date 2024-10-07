@@ -69,9 +69,26 @@ namespace Blog.Web.Controllers
         [Authorize]
         [HttpGet]
         [Route("novo-comentario/{id:guid}")]
-        public IActionResult Create(Guid id)
+        public async Task<IActionResult> Create(Guid id)
         {
-            ViewBag.Id = id.ToString();
+            var _autor = await _autorRepository.Buscar(p => p.Id == UserId);
+
+            if (_autor == null || !_autor.Any())
+            {
+                var _insAutor = new Autor
+                {
+                    Email = UserName,
+                    Nome = UserName,
+                    Id = UserId,
+                    Biografia = ""
+                };
+
+
+                await _autorService.Adicionar(_insAutor);
+            }
+
+
+            ViewBag.idPostagem = id.ToString();
 
             return View();
         }
@@ -81,17 +98,29 @@ namespace Blog.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("novo-comentario/{id:guid}")]
-        public async Task<IActionResult> Create([Bind("Conteudo,Id")] Comentario comentario)
+        public async Task<IActionResult> Create([Bind("Conteudo,IdPostagem")] Comentario comentario)
         {
             if (ModelState.IsValid)
             {
+
                 comentario.Id = Guid.NewGuid();
+                comentario.Conteudo = comentario.Conteudo;
+                comentario.IdPostagem = comentario.IdPostagem;
+                comentario.DataPostagem = DateTime.Now;
+                comentario.IdAutor = UserId;
+                comentario.NomeAutor = UserName;
 
                 await _comentarioService.Adicionar(comentario);
 
-                return RedirectToAction(nameof(Index));
+                if (!OperacaoValida())
+                {
+                    ViewBag.idPostagem = comentario.Id.ToString();
+                    return View(comentario);
+                }
+
+                return RedirectToAction("Details", "Postagem", new { id = comentario.IdPostagem });
             }
-            ViewData["IdPostagem"] = Guid.NewGuid().ToString();
+            
             return View(comentario);
         }
 
@@ -110,6 +139,12 @@ namespace Blog.Web.Controllers
             {
                 return NotFound();
             }
+
+            if (UserAdmin == false && UserId != comentario.IdAutor)
+            {
+                return Unauthorized();
+            }
+
 
             return View(comentario);
         }
@@ -131,6 +166,12 @@ namespace Blog.Web.Controllers
                 {
                     var _comentarioDB = _comentarioRepository.ObterPorId(id).Result;
 
+                    if (UserAdmin == false && UserId != _comentarioDB.IdAutor)
+                    {
+                        return Unauthorized();
+                    }
+
+
                     if (_comentarioDB != null)
                     {
                         _comentarioDB.Conteudo = comentario.Conteudo;
@@ -150,7 +191,7 @@ namespace Blog.Web.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", "Postagem", new { id = comentario.IdPostagem });
             }
             ViewData["IdPostagem"] = id.ToString() ;
             return View(comentario);
@@ -173,6 +214,12 @@ namespace Blog.Web.Controllers
                 return NotFound();
             }
 
+            if (UserAdmin == false && UserId != comentario.IdAutor)
+            {
+                return Unauthorized();
+            }
+
+
             return View(comentario);
         }
 
@@ -185,6 +232,11 @@ namespace Blog.Web.Controllers
             var comentario = await _comentarioRepository.ObterPorId(id);
             if (comentario != null)
             {
+                if (UserAdmin == false && UserId != comentario.IdAutor)
+                {
+                    return Unauthorized();
+                }
+
                 await _comentarioService.Remover(comentario.Id);
                 return RedirectToAction("Details", "Postagem", new { id = comentario.IdPostagem });
             }

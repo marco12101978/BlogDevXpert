@@ -2,6 +2,8 @@
 
 @{
     ViewData["Title"] = "Detalhes do Autor";
+    var userId = @ViewBag.IdUser ?? Guid.Empty;
+    var isAdmin = @ViewBag.Admin ?? false;
 }
 
 <div class="container mt-4">
@@ -33,8 +35,15 @@
             </dl>
 
             <div class="mt-4">
-                <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning">Editar</a>
-                <a asp-action="Index" class="btn btn-secondary ml-2">Voltar à Lista</a>
+                @if (userId == Model.Id || isAdmin)
+                {
+                    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning">Editar</a>
+                }
+                else
+                {
+                    <button class="btn btn-secondary" disabled>Editar</button>
+                }
+                <a asp-action="Index" class="btn btn btn-primary ml-2">Voltar à Lista</a>
             </div>
         </div>
     </div>

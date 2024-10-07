@@ -105,9 +105,9 @@ namespace Blog.Web.Configurations
             await context.Autores.AddAsync(new Blog.Business.Models.Autor()
             {
                 Id = idAutor,
-                Nome = "Marco Aurelio Roque",
-                Email = "marco@marco.com.br",
-                Biografia = "Marco Aurelio Roque é um entusiasta da tecnologia e apaixonado por desenvolvimento de software. Com mais de 15 anos de experiência na área."
+                Nome = "marco@imperiumsolucoes.com.br",
+                Email = "marco@imperiumsolucoes.com.br",
+                Biografia = ""
             });
 
             await context.SaveChangesAsync();

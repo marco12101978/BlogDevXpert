@@ -55,27 +55,6 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-//app.UseEndpoints(endpoints =>
-//{
-//    endpoints.MapControllerRoute(
-//        name: "comentarios",
-//        pattern: "Comentarios/Create/{id}",
-//        defaults: new { controller = "Comentarios", action = "Create" });
-
-//    endpoints.MapControllerRoute(
-//        name: "default",
-//        pattern: "{controller=Home}/{action=Index}/{id?}");
-//});
-
-//app.MapControllerRoute(
-//    name: "default",
-//    pattern: "{controller=Home}/{action=Index}/{id?}");
-
-
-app.MapControllerRoute(
-    name: "comentarios",
-    pattern: "Comentarios/Create/{id}",
-    defaults: new { controller = "Comentarios", action = "Create" });
 
 app.MapControllerRoute(
     name: "default",
