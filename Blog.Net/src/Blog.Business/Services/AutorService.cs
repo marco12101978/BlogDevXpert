@@ -38,7 +38,7 @@ namespace Blog.Business.Services
 
             if (_autorRepository.Buscar(f => f.Email == autor.Email && f.Id != autor.Id).Result.Any())
             {
-                Notificar("Já existe um fornecedor com este email informado.");
+                Notificar("Já existe um autor com este email informado.");
                 return;
             }
 

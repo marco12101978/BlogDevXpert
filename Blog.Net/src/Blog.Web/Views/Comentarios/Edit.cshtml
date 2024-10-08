@@ -1,4 +1,5 @@
-﻿@model Blog.Business.Models.Comentario
+﻿@using Blog.Web.ViewModels
+@model ComentarioViewModel
 
 @{
 
@@ -23,9 +24,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label asp-for="IdPostagem" class="control-label"></label>
-                    <input asp-for="IdPostagem" class="form-control" readonly />
-                    <span asp-validation-for="IdPostagem" class="text-danger"></span>
+                    <input asp-for="IdPostagem" class="form-control" type="hidden" />
                 </div>
 
                 <input type="hidden" asp-for="Id" />

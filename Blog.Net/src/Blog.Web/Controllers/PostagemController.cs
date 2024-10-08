@@ -1,7 +1,9 @@
-﻿using Blog.Business.Intefaces;
+﻿using AutoMapper;
+using Blog.Business.Intefaces;
 using Blog.Business.Models;
 using Blog.Business.Services;
 using Blog.Data.Repository;
+using Blog.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -11,6 +13,7 @@ namespace Blog.Web.Controllers
 {
     public class PostagemController : BaseController
     {
+        private readonly IMapper _mapper;
 
         private readonly IPostagemRepository _postagemRepository;
         private readonly IPostagemService _postagemService;
@@ -18,13 +21,16 @@ namespace Blog.Web.Controllers
         private readonly IAutorRepository _autorRepository;
         private readonly IAutorService _autorService;
 
-        public PostagemController(IPostagemRepository repository,
+        public PostagemController(IMapper mapper,
+                                  IPostagemRepository repository,
                                   IPostagemService service,
                                   IAutorRepository autorRepository,
                                   IAutorService autorService,
                                   INotificador notificador,
                                   IAppIdentityUser user) : base(notificador, user)
         {
+            _mapper = mapper;
+
             _postagemRepository = repository;
             _postagemService = service;
 
@@ -41,8 +47,7 @@ namespace Blog.Web.Controllers
             ViewBag.IdUser = UserId;
             ViewBag.Admin = UserAdmin;
 
-            var posts = await _postagemRepository.ObterTodasPostagem();
-            return View(posts);
+            return View(_mapper.Map<List<PostagemViewModel>>(await _postagemRepository.ObterTodasPostagem()));
 
         }
 
@@ -54,14 +59,14 @@ namespace Blog.Web.Controllers
             ViewBag.IdUser = UserId;
             ViewBag.Admin = UserAdmin;
 
-            var postagem = await _postagemRepository.ObterPostagem(id);
+            PostagemViewModel postagemViewModel = await ObterPostagem(id);
 
-            if (postagem == null)
+            if (postagemViewModel == null)
             {
                 return NotFound();
             }
 
-            return View(postagem);
+            return View(postagemViewModel);
         }
 
 
@@ -70,7 +75,7 @@ namespace Blog.Web.Controllers
         [Route("nova-postagem")]
         public async Task<IActionResult> Create()
         {
-            var _autor = await _autorRepository.Buscar(p => p.Id == UserId);
+            IEnumerable<Autor> _autor = await _autorRepository.Buscar(p => p.Id == UserId);
 
             if (_autor == null || !_autor.Any())
             {
@@ -94,21 +99,21 @@ namespace Blog.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("nova-postagem")]
-        public async Task<IActionResult> Create([Bind("Titulo,Conteudo,IdAutor")] Postagem postagem)
+        public async Task<IActionResult> Create([Bind("Titulo,Conteudo")] PostagemViewModel postagemViewModel)
         {
             if (ModelState.IsValid)
             {
                 
-                postagem.Id = Guid.NewGuid();
-                postagem.DataCriacao = DateTime.Now;
-                postagem.IdAutor = UserId;
+                postagemViewModel.Id = Guid.NewGuid();
+                postagemViewModel.DataCriacao = DateTime.Now;
+                postagemViewModel.IdAutor = UserId;
 
-                await _postagemService.Adicionar(postagem);
+                await _postagemService.Adicionar(_mapper.Map<Postagem>(postagemViewModel));
 
                 return RedirectToAction("Index");
 
             }
-            return View(postagem);
+            return View(postagemViewModel);
         }
 
 
@@ -122,7 +127,7 @@ namespace Blog.Web.Controllers
                 return NotFound();
             }
 
-            Postagem postagem = await _postagemRepository.ObterPostagem(Guid.Parse(id.ToString()));
+            PostagemViewModel postagem = ObterPostagem(id).Result;
 
             if (UserAdmin == false && UserId != postagem.IdAutor)
             {
@@ -142,7 +147,7 @@ namespace Blog.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("editar-postagem/{id:guid}")]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Titulo,Conteudo,DataCriacao,DataAtualizacao,IdAutor,Id")] Postagem postagem)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Titulo,Conteudo,DataCriacao,IdAutor,Id")] PostagemViewModel postagem)
         {
             if (id != postagem.Id)
             {
@@ -157,26 +162,13 @@ namespace Blog.Web.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    postagem.DataAtualizacao = DateTime.Now;
-                    await _postagemRepository.Atualizar(postagem);
 
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PostagemExists(postagem.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                postagem.DataAtualizacao = DateTime.Now;
+                await _postagemRepository.Atualizar(_mapper.Map<Postagem>(postagem));
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdAutor"] = new SelectList(await _autorRepository.ObterTodos(), "Id", "Email", postagem.IdAutor);
+
             return View(postagem);
         }
 
@@ -186,7 +178,8 @@ namespace Blog.Web.Controllers
         [Route("excluir-postagem/{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var postagem = await _postagemRepository.ObterPorId(id);
+            PostagemViewModel? postagem = await ObterPostagem(id);
+
             if (postagem == null)
             {
                 return NotFound();
@@ -202,12 +195,13 @@ namespace Blog.Web.Controllers
         }
 
 
-        [HttpPost, ActionName("DeleteConfirmado")]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Route("excluir-postagem/{id:guid}")]
         public async Task<IActionResult> DeleteConfirmado(Guid id)
         {
-            var postagem = await _postagemRepository.ObterPorId(id);
+            PostagemViewModel? postagem = await ObterPostagem(id);
+
             if (postagem == null)
             {
                 return NotFound();
@@ -228,9 +222,18 @@ namespace Blog.Web.Controllers
 
         private bool PostagemExists(Guid id)
         {
-            return _postagemRepository.ObterPostagem(id) != null ? true : false;
+            return _postagemRepository.ObterPostagem(id) != null;
         }
 
+
+        private async Task<PostagemViewModel?> ObterPostagem(Guid? id)
+        {
+            if (id == null)
+                return null;
+
+            var postagem = _mapper.Map<PostagemViewModel>(await _postagemRepository.ObterPostagem(Guid.Parse(id.ToString())));
+            return postagem;
+        }
 
     }
 }

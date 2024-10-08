@@ -1,8 +1,10 @@
-﻿using Blog.Business.Intefaces;
+﻿using AutoMapper;
+using Blog.Business.Intefaces;
 using Blog.Business.Models;
 using Blog.Business.Services;
 using Blog.Data.Context;
 using Blog.Data.Repository;
+using Blog.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,16 +13,19 @@ namespace Blog.Web.Controllers
 {
     public class AutorController : BaseController
     {
+        private readonly IMapper _mapper;
 
         private readonly IAutorRepository _autorRepository;
         private readonly IAutorService _autorService;
 
 
-        public AutorController(IAutorRepository autorRepository,
-                                     IAutorService autorService,
-                                     INotificador notificador,
-                                     IAppIdentityUser user) : base(notificador, user)
+        public AutorController(IMapper mapper,
+                               IAutorRepository autorRepository,
+                               IAutorService autorService,
+                               INotificador notificador,
+                               IAppIdentityUser user) : base(notificador, user)
         {
+            _mapper = mapper;
             _autorRepository = autorRepository;
             _autorService = autorService;
         }
@@ -32,7 +37,8 @@ namespace Blog.Web.Controllers
         {
             ViewBag.IdUser = UserId;
             ViewBag.Admin = UserAdmin;
-            return View(await _autorRepository.ObterTodos());
+
+            return View(_mapper.Map<IEnumerable<AutorViewModel>>(await _autorRepository.ObterTodos()));
         }
 
 
@@ -48,7 +54,7 @@ namespace Blog.Web.Controllers
             ViewBag.IdUser = UserId;
             ViewBag.Admin = UserAdmin;
 
-            var autor =  _autorRepository.ObterPorId(id ?? Guid.Empty).Result;
+            AutorViewModel? autor = await ObterAutor(id);
 
             if (autor == null)
             {
@@ -60,7 +66,7 @@ namespace Blog.Web.Controllers
 
         [Authorize]
         [HttpGet]
-        [Route("novo-autor/{id:guid}")]
+        [Route("novo-autor")]
         public IActionResult Create()
         {
             return View();
@@ -69,13 +75,13 @@ namespace Blog.Web.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("novo-autor/{id:guid}")]
-        public async Task<IActionResult> Create([Bind("Nome,Email,Biografia,Id")] Autor autor)
+        [Route("novo-autor")]
+        public async Task<IActionResult> Create([Bind("Nome,Email,Biografia,Id")] AutorViewModel autor)
         {
             if (ModelState.IsValid)
             {
                 autor.Id = UserId;
-                await _autorService.Adicionar(autor);
+                await _autorService.Adicionar(_mapper.Map<Autor>(autor));
                 return RedirectToAction(nameof(Index));
             }
             return View(autor);
@@ -91,7 +97,7 @@ namespace Blog.Web.Controllers
                 return NotFound();
             }
 
-            var autor = await _autorRepository.ObterPorId(id ?? Guid.Empty);
+            AutorViewModel? autor = await ObterAutor(id);
 
             if (autor == null)
             {
@@ -110,7 +116,7 @@ namespace Blog.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("editar-autor/{id:guid}")]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Nome,Email,Biografia,Id")] Autor autor)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Nome,Email,Biografia,Id")] AutorViewModel autor)
         {
             if (id != autor.Id)
             {
@@ -119,28 +125,24 @@ namespace Blog.Web.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    var _autorDB = _autorRepository.ObterPorId(id).Result;
+                AutorViewModel? _autorDB = await ObterAutor(id);
 
-                    if (UserAdmin == false && UserId != autor.Id)
-                    {
-                        return Unauthorized();
-                    }
-
-                    await _autorRepository.Atualizar(_autorDB);
-                }
-                catch (DbUpdateConcurrencyException)
+                if (_autorDB == null)
                 {
-                    if (!AutorExists(autor.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    return NotFound();
                 }
+
+                _autorDB.Email = autor.Email;
+                _autorDB.Nome = autor.Nome;
+                _autorDB.Biografia = autor.Biografia;
+
+                if (UserAdmin == false && UserId != autor.Id)
+                {
+                    return Unauthorized();
+                }
+
+                await _autorRepository.Atualizar(_mapper.Map<Autor>(_autorDB));
+
                 return RedirectToAction(nameof(Index));
             }
             return View(autor);
@@ -157,9 +159,9 @@ namespace Blog.Web.Controllers
                 return NotFound();
             }
 
-            Autor autor = _autorRepository.ObterPorId(id ?? Guid.Empty).Result;
+            AutorViewModel? autor = await ObterAutor(id);
 
-            if (UserAdmin == false && UserId != autor.Id )
+            if (UserAdmin == false && UserId != autor?.Id )
             {
                 return Unauthorized();
             }
@@ -178,7 +180,7 @@ namespace Blog.Web.Controllers
         [Route("deletar-autor/{id:guid}")]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var autor = await _autorRepository.ObterPorId(id);
+            AutorViewModel? autor = await ObterAutor(id);
             if (autor != null)
             {
                 if (UserAdmin == false && UserId != autor.Id)
@@ -196,5 +198,15 @@ namespace Blog.Web.Controllers
         {
             return  _autorRepository.ObterPorId(id) != null ? true : false;
         }
+
+        private async Task<AutorViewModel?> ObterAutor(Guid? id)
+        {
+            if (id == null)
+                return null;
+
+            var _autor = _mapper.Map<AutorViewModel>(await _autorRepository.ObterPorId(id ?? Guid.Empty));
+            return _autor;
+        }
+
     }
 }

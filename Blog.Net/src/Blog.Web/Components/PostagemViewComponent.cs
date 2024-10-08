@@ -1,20 +1,29 @@
-﻿using Blog.Business.Intefaces;
+﻿using AutoMapper;
+using Blog.Business.Intefaces;
+using Blog.Data.Repository;
+using Blog.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Web.Components
 {
     public class PostagemViewComponent : ViewComponent
     {
-        private readonly IPostagemRepository postagemRepository;
+        private readonly IMapper _mapper;
+        private readonly IPostagemRepository _postagemRepository;
         private readonly IAppIdentityUser user;
 
         protected Guid UserId { get; set; }
         protected string UserName { get; set; }
         protected bool UserAdmin { get; set; }
 
-        public PostagemViewComponent(IPostagemRepository postagemService, IAppIdentityUser user)
+        public PostagemViewComponent(IMapper mapper,
+                                     IPostagemRepository postagemService,
+                                     IAppIdentityUser user)
         {
-            postagemRepository = postagemService;
+            _mapper = mapper;
+            _postagemRepository = postagemService;
+
+
             this.user = user;
 
             if (user.IsAuthenticated())
@@ -30,8 +39,10 @@ namespace Blog.Web.Components
             ViewBag.IdUser = UserId;
             ViewBag.Admin = UserAdmin;
 
-            var postagem = await postagemRepository.ObterTodasPostagem();
-            return View(postagem);
+            return View(_mapper.Map<List<PostagemViewModel>>(await _postagemRepository.ObterTodasPostagem()));
         }
+
+
+
     }
 }

@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Blog.Business.Models;
+using Blog.Web.ViewModels;
 
 namespace Blog.Web.Configurations
 {
@@ -6,9 +8,9 @@ namespace Blog.Web.Configurations
     {
         public AutoMapperConfig()
         {
-            //CreateMap<Fornecedor, FornecedorViewModel>().ReverseMap();
-            //CreateMap<Endereco, EnderecoViewModel>().ReverseMap();
-            //CreateMap<Produto, ProdutoViewModel>().ReverseMap();    
+            CreateMap<Autor, AutorViewModel>().ReverseMap();
+            CreateMap<Postagem, PostagemViewModel>().ReverseMap();
+            CreateMap<Comentario, ComentarioViewModel>().ReverseMap();    
         }
 
 
