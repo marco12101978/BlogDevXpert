@@ -9,6 +9,9 @@ builder
     .AddDbContextConfig()
     .AddIdentityConfig();
 
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+builder.Services.ResolveDependencies();
 
 var app = builder.Build();
 

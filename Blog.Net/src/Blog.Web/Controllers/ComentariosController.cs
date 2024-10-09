@@ -1,13 +1,9 @@
 ﻿using AutoMapper;
 using Blog.Business.Intefaces;
 using Blog.Business.Models;
-using Blog.Business.Notificacoes;
-using Blog.Business.Services;
-using Blog.Data.Repository;
 using Blog.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Blog.Web.Controllers
 {
@@ -266,7 +262,7 @@ namespace Blog.Web.Controllers
             return RedirectToAction("Index", "Postagem");
         }
 
-        private bool ComentarioExists(Guid id)
+        private bool ExiteComentario(Guid id)
         {
             return _comentarioRepository.ObterPorId(id) != null ? true : false;
         }

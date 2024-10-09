@@ -1,5 +1,5 @@
 ﻿using Blog.Api.Authentication;
-using Blog.Api.Models;
+using Blog.Api.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -72,7 +72,8 @@ namespace Blog.Api.Controllers
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.UserName)
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
             };
 
             // Adicionar roles como claims
