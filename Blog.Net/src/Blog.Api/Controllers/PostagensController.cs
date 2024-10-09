@@ -1,12 +1,18 @@
 ﻿using AutoMapper;
+using Blog.Api.ViewModels;
 using Blog.Business.Intefaces;
 using Blog.Business.Models;
+using Blog.Business.Services;
 using Blog.Data.Context;
+using Blog.Data.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace Blog.Api.Controllers
 {
+    [Authorize]
     [Route("api/postagens")]
     [ApiController]
     public class PostagensController : MainController
@@ -36,92 +42,177 @@ namespace Blog.Api.Controllers
             _autorService = autorService;
         }
 
+        [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Postagem>>> GetPostagens()
+        [ProducesResponseType(typeof(List<PostagemViewModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<List<PostagemViewModel>>> ObterTodos()
         {
-            //return await _context.Postagens.ToListAsync();
+            if (!await _postagemRepository.ExiteTabela())
+            {
+                NotificarErro("Falha ao Obter dados favor entrar em contato com o responsavel técnico");
+                return CustomResponse(HttpStatusCode.NotFound);
+            }
 
-            return Ok();
+            var resultado = await _postagemRepository.ObterTodasPostagemEComentarios();
+
+
+            return _mapper.Map<List<PostagemViewModel>>(resultado);
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Postagem>> GetPostagem(Guid id)
+        [AllowAnonymous]
+        [HttpGet("{id:guid}")]
+        [ProducesResponseType(typeof(PostagemViewModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<PostagemViewModel>> ObterPorId(Guid id)
         {
-            //var postagem = await _context.Postagens.FindAsync(id);
+            if (!await _postagemRepository.ExiteTabela())
+            {
+                NotificarErro("Falha ao Obter dados favor entrar em contato com o responsavel técnico");
+                return CustomResponse(HttpStatusCode.NotFound);
+            }
 
-            //if (postagem == null)
-            //{
-            //    return NotFound();
-            //}
+            var comentario = await ObterPostagem(id);
 
-            //return postagem;
-
-            return Ok();
+            if (comentario == null)
+            {
+                return NotFound();
+            }
+            return comentario;
         }
 
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutPostagem(Guid id, Postagem postagem)
-        {
-            //if (id != postagem.Id)
-            //{
-            //    return BadRequest();
-            //}
-
-            //_context.Entry(postagem).State = EntityState.Modified;
-
-            //try
-            //{
-            //    await _context.SaveChangesAsync();
-            //}
-            //catch (DbUpdateConcurrencyException)
-            //{
-            //    if (!PostagemExists(id))
-            //    {
-            //        return NotFound();
-            //    }
-            //    else
-            //    {
-            //        throw;
-            //    }
-            //}
-
-            //return NoContent();
-            return Ok();
-        }
 
         [HttpPost]
-        public async Task<ActionResult<Postagem>> PostPostagem(Postagem postagem)
+        [ProducesResponseType(typeof(PostagemViewModel), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<PostagemViewModel>> Adicionar(PostagemViewModel comentario)
         {
-            //_context.Postagens.Add(postagem);
-            //await _context.SaveChangesAsync();
+            if (!await _postagemRepository.ExiteTabela())
+            {
+                NotificarErro("Falha ao Inserir dados favor entrar em contato com o responsavel técnico");
+                return CustomResponse(HttpStatusCode.NotFound);
+            }
 
-            //return CreatedAtAction("GetPostagem", new { id = postagem.Id }, postagem);
+            if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-            return Ok();
+            await CriarUsuarioSemNaoExistir();
+
+            await _postagemService.Adicionar(_mapper.Map<Postagem>(comentario));
+
+            return CustomResponse(HttpStatusCode.Created, comentario);
+
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePostagem(Guid id)
+
+        [HttpPut("{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> Atualizar(Guid id, PostagemViewModel comentario)
         {
-            //var postagem = await _context.Postagens.FindAsync(id);
-            //if (postagem == null)
-            //{
-            //    return NotFound();
-            //}
+            var xx = UserId;
+            var xxx = UserAdmin;
 
-            //_context.Postagens.Remove(postagem);
-            //await _context.SaveChangesAsync();
+            if (id != comentario.Id)
+            {
+                NotificarErro("Os ids informados não são iguais!");
+                return CustomResponse();
+            }
 
-            //return NoContent();
-            return Ok();
+            if (!await _postagemRepository.ExiteTabela())
+            {
+                NotificarErro("Falha ao Atualizar dados favor entrar em contato com o responsavel técnico");
+                return CustomResponse(HttpStatusCode.NotFound);
+            }
+
+
+            if (!ModelState.IsValid) return CustomResponse(ModelState);
+
+            var comentarioAtualizacao = await ObterPostagem(id);
+
+            if (comentarioAtualizacao == null)
+            {
+                return NotFound();
+            }
+
+            if (UserAdmin || UserId == comentario.IdAutor)
+            {
+                comentarioAtualizacao.Conteudo = comentario.Conteudo;
+
+                await _postagemService.Atualizar(_mapper.Map<Postagem>(comentarioAtualizacao));
+
+                return CustomResponse(HttpStatusCode.NoContent);
+            }
+            else
+            {
+                NotificarErro("Falha ao Excluir , sem autorização");
+                return CustomResponse(HttpStatusCode.Unauthorized);
+            }
+
         }
 
-        private bool PostagemExists(Guid id)
-        {
-            // return _context.Postagens.Any(e => e.Id == id);
 
-            return false;
+
+        [HttpDelete("{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> Excluir(Guid id)
+        {
+            if (!await _postagemRepository.ExiteTabela())
+            {
+                NotificarErro("Falha ao Excluir dados favor entrar em contato com o responsavel técnico");
+                return CustomResponse(HttpStatusCode.NotFound);
+            }
+
+            var comentario = await ObterPostagem(id);
+
+            if (comentario == null) return NotFound();
+
+
+            if (UserAdmin || UserId == comentario.IdAutor)
+            {
+                await _postagemService.Remover(id);
+
+                return CustomResponse(HttpStatusCode.NoContent);
+            }
+            else
+            {
+                NotificarErro("Falha ao Excluir , sem autorização ");
+                return CustomResponse(HttpStatusCode.Unauthorized);
+            }
+
+
+
+        }
+
+
+        private async Task<PostagemViewModel?> ObterPostagem(Guid? id)
+        {
+            if (id == null) return null;
+
+            PostagemViewModel comentario = _mapper.Map<PostagemViewModel>(await _postagemRepository.ObterPostagem(id ?? Guid.Empty));
+            return comentario;
+        }
+
+
+        private async Task CriarUsuarioSemNaoExistir()
+        {
+            IEnumerable<Autor> _autor = await _autorRepository.Buscar(p => p.Id == UserId);
+
+            if (_autor == null || !_autor.Any())
+            {
+                var _insAutor = new Autor
+                {
+                    Email = UserName,
+                    Nome = UserName,
+                    Id = UserId,
+                    Biografia = ""
+                };
+
+
+                await _autorService.Adicionar(_insAutor);
+            }
         }
     }
 }

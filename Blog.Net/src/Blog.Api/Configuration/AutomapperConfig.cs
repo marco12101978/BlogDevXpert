@@ -4,9 +4,20 @@ using Blog.Business.Models;
 
 namespace Blog.Api.Configuration
 {
-    public class AutomapperConfig : Profile
+
+    public static class AutoMapperConfig
     {
-        public AutomapperConfig()
+        public static WebApplicationBuilder AddAutoMapperConfig(this WebApplicationBuilder builder)
+        {
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            return builder;
+        }
+    }
+
+    public class AutomapperConfiguration : Profile
+    {
+        public AutomapperConfiguration()
         {
             CreateMap<Autor, AutorViewModel>().ReverseMap();
             CreateMap<Postagem, PostagemViewModel>().ReverseMap();

@@ -16,6 +16,19 @@ namespace Blog.Data.Repository
         {
         }
 
+        public async Task<bool> ExiteTabela()
+        {
+            try
+            {
+                var anyEntity = await Db.Comentarios.AnyAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         public async Task<Comentario?> ObterComentario(Guid postagemId)
         {
             return await Db.Comentarios.AsNoTracking()

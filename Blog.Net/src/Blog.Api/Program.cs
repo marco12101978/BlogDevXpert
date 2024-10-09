@@ -7,11 +7,10 @@ builder
     .AddCorsConfig()
     .AddSwaggerConfig()
     .AddDbContextConfig()
-    .AddIdentityConfig();
+    .AddIdentityConfig()
+    .AddAutoMapperConfig()
+    .AddDependencyInjectionConfig();
 
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
-builder.Services.ResolveDependencies();
 
 var app = builder.Build();
 

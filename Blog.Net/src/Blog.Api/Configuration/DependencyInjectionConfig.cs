@@ -9,6 +9,12 @@ namespace Blog.Api.Configuration
 {
     public static class DependencyInjectionConfig
     {
+        public static WebApplicationBuilder AddDependencyInjectionConfig(this WebApplicationBuilder builder)
+        {
+            builder.Services.ResolveDependencies();
+            return builder;
+        }
+
         public static IServiceCollection ResolveDependencies(this IServiceCollection services)
         {
             services.AddScoped<IAppIdentityUser, AppIdentityUser>();

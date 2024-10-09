@@ -1,5 +1,6 @@
 ﻿using Blog.Api.Authentication;
 using Blog.Api.ViewModels;
+using Blog.Business.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -44,6 +45,7 @@ namespace Blog.Api.Controllers
             if (result.Succeeded)
             {
                 await _signInManager.SignInAsync(user, false);
+
                 return Ok(await GerarJwt(user.Email));
             }
 

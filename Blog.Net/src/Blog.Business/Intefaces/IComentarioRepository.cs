@@ -12,5 +12,7 @@ namespace Blog.Business.Intefaces
         Task<Comentario> ObterComentario(Guid postagemId);
 
         Task<List<Comentario>> ObterTodosComentarios();
+
+        Task<bool> ExiteTabela();
     }
 }

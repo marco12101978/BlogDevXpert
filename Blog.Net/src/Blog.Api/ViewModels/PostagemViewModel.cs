@@ -25,7 +25,7 @@ namespace Blog.Api.ViewModels
         public DateTime? DataAtualizacao { get; set; }
 
         public Guid IdAutor { get; set; }
-        public Autor? Autor { get; set; }
+        //public Autor? Autor { get; set; }
 
         public List<ComentarioViewModel>? Comentarios { get; set; }
     }

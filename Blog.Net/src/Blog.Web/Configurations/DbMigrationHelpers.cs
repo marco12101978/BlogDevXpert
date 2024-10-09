@@ -67,8 +67,6 @@ namespace Blog.Web.Configurations
                 SecurityStamp = Guid.NewGuid().ToString(),
             };
 
-            ////await userManager.CreateAsync(user, "Imp@S2291755"); // Use uma senha segura
-
             await contextId.Users.AddAsync(user);
 
             await contextId.SaveChangesAsync();

@@ -2,12 +2,13 @@
 using Blog.Api.ViewModels;
 using Blog.Business.Intefaces;
 using Blog.Business.Models;
-using Blog.Data.Context;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace Blog.Api.Controllers
 {
+    [Authorize]
     [Route("api/comentarios")]
     [ApiController]
     public class ComentariosController : MainController
@@ -26,7 +27,7 @@ namespace Blog.Api.Controllers
                                      IAutorRepository autorRepository,
                                      IAutorService autorService,
                                      INotificador notificador,
-                                     IAppIdentityUser user) : base(notificador, user) 
+                                     IAppIdentityUser user) : base(notificador, user)
         {
             _mapper = mapper;
 
@@ -37,101 +38,167 @@ namespace Blog.Api.Controllers
             _autorService = autorService;
         }
 
+        [AllowAnonymous]
         [HttpGet]
-        public async Task<IEnumerable<ComentarioViewModel>> GetComentarios()
+        [ProducesResponseType(typeof(List<ComentarioViewModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<List<ComentarioViewModel>>> ObterTodos()
         {
-            var xx = UserId;
-            var xxx = UserAdmin;
+            if (!await _comentarioRepository.ExiteTabela())
+            {
+                NotificarErro("Falha ao Obter dados favor entrar em contato com o responsavel técnico");
+                return CustomResponse(HttpStatusCode.NotFound);
+            }
 
-            return _mapper.Map<IEnumerable<ComentarioViewModel>>(await _comentarioRepository.ObterTodos());
-
-            //return await _context.Comentarios.ToListAsync();
+            return _mapper.Map<List<ComentarioViewModel>>(await _comentarioRepository.ObterTodosComentarios());
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Comentario>> GetComentario(Guid id)
+        [AllowAnonymous]
+        [HttpGet("{id:guid}")]
+        [ProducesResponseType(typeof(ComentarioViewModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<ComentarioViewModel>> ObterPorId(Guid id)
         {
-            //var comentario = await _context.Comentarios.FindAsync(id);
+            if (!await _comentarioRepository.ExiteTabela())
+            {
+                NotificarErro("Falha ao Obter dados favor entrar em contato com o responsavel técnico");
+                return CustomResponse(HttpStatusCode.NotFound);
+            }
 
-            //if (comentario == null)
-            //{
-            //    return NotFound();
-            //}
+            var comentario = await ObterComentario(id);
 
-            //return comentario;
-            return Ok();
+            if (comentario == null)
+            {
+                return NotFound();
+            }
+            return comentario;
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutComentario(Guid id, Comentario comentario)
-        {
-            //if (id != comentario.Id)
-            //{
-            //    return BadRequest();
-            //}
-
-            //_context.Entry(comentario).State = EntityState.Modified;
-
-            //try
-            //{
-            //    await _context.SaveChangesAsync();
-            //}
-            //catch (DbUpdateConcurrencyException)
-            //{
-            //    if (!ExisteComentario(id))
-            //    {
-            //        return NotFound();
-            //    }
-            //    else
-            //    {
-            //        throw;
-            //    }
-            //}
-
-            //return NoContent();
-            return Ok();
-        }
 
         [HttpPost]
-        public async Task<ActionResult<Comentario>> PostComentario(Comentario comentario)
+        [ProducesResponseType(typeof(ComentarioViewModel), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<ComentarioViewModel>> Adicionar(ComentarioViewModel comentario)
         {
-            //_context.Comentarios.Add(comentario);
-            //await _context.SaveChangesAsync();
+            if (!await _comentarioRepository.ExiteTabela())
+            {
+                NotificarErro("Falha ao Inserir dados favor entrar em contato com o responsavel técnico");
+                return CustomResponse(HttpStatusCode.NotFound);
+            }
 
-            //return CreatedAtAction("GetComentario", new { id = comentario.Id }, comentario);
-            return Ok();
-        }
+            await CriarUsuarioSemNaoExistir();
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteComentario(Guid id)
-        {
-            //var comentario = await _context.Comentarios.FindAsync(id);
-            //if (comentario == null)
-            //{
-            //    return NotFound();
-            //}
 
-            //_context.Comentarios.Remove(comentario);
-            //await _context.SaveChangesAsync();
+            if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-            //return NoContent();
+            await _comentarioRepository.Adicionar(_mapper.Map<Comentario>(comentario));
 
-            return Ok();
+            return CustomResponse(HttpStatusCode.Created, comentario);
+
         }
 
 
-        private bool ExisteComentario(Guid id)
+        [HttpPut("{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> Atualizar(Guid id, ComentarioViewModel comentario)
         {
-            return _comentarioRepository.ObterPorId(id) != null ? true : false;
+            if (id != comentario.Id)
+            {
+                NotificarErro("Os ids informados não são iguais!");
+                return CustomResponse();
+            }
+
+            if (!await _comentarioRepository.ExiteTabela())
+            {
+                NotificarErro("Falha ao Atualizar dados favor entrar em contato com o responsavel técnico");
+                return CustomResponse(HttpStatusCode.NotFound);
+            }
+
+            if (!ModelState.IsValid) return CustomResponse(ModelState);
+
+            var comentarioAtualizacao = await ObterComentario(id);
+
+            if (comentarioAtualizacao == null)
+            {
+                return NotFound();
+            }
+
+            if (UserAdmin || UserId == comentario.IdAutor)
+            {
+                comentarioAtualizacao.Conteudo = comentario.Conteudo;
+
+                await _comentarioService.Atualizar(_mapper.Map<Comentario>(comentarioAtualizacao));
+
+                return CustomResponse(HttpStatusCode.NoContent);
+            }
+            else
+            {
+                NotificarErro("Falha ao Excluir , sem autorização ");
+                return CustomResponse(HttpStatusCode.Unauthorized);
+            }
+
         }
+
+
+
+        [HttpDelete("{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> Excluir(Guid id)
+        {
+            if (!await _comentarioRepository.ExiteTabela())
+            {
+                NotificarErro("Falha ao Excluir dados favor entrar em contato com o responsavel técnico");
+                return CustomResponse(HttpStatusCode.NotFound);
+            }
+
+            var comentario = await ObterComentario(id);
+
+            if (comentario == null) return NotFound();
+
+            if (UserAdmin || UserId == comentario.IdAutor)
+            {
+                await _comentarioService.Remover(id);
+
+                return CustomResponse(HttpStatusCode.NoContent);
+            }
+            else
+            {
+                NotificarErro("Falha ao Excluir , sem autorização ");
+                return CustomResponse(HttpStatusCode.Unauthorized);
+            }
+        }
+
 
         private async Task<ComentarioViewModel?> ObterComentario(Guid? id)
         {
-            if (id == null)
-                return null;
+            if (id == null) return null;
 
             ComentarioViewModel comentario = _mapper.Map<ComentarioViewModel>(await _comentarioRepository.ObterComentario(id ?? Guid.Empty));
             return comentario;
+        }
+
+
+        private async Task CriarUsuarioSemNaoExistir()
+        {
+            IEnumerable<Autor> _autor = await _autorRepository.Buscar(p => p.Id == UserId);
+
+            if (_autor == null || !_autor.Any())
+            {
+                var _insAutor = new Autor
+                {
+                    Email = UserName,
+                    Nome = UserName,
+                    Id = UserId,
+                    Biografia = ""
+                };
+
+
+                await _autorService.Adicionar(_insAutor);
+            }
         }
     }
 }

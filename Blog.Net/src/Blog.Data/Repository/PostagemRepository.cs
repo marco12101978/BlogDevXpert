@@ -15,10 +15,20 @@ namespace Blog.Data.Repository
         public PostagemRepository(MeuDbContext context) : base(context)
         {
 
-
-
         }
 
+        public async Task<bool> ExiteTabela()
+        {
+            try
+            {
+                var anyEntity = await Db.Postagens.AnyAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
 
         public async Task<Postagem?> ObterPostagem(Guid postagemId)
         {
@@ -37,6 +47,15 @@ namespace Blog.Data.Repository
                                      .Include(p => p.Autor)
                                      .OrderByDescending(p => p.DataCriacao)
                                      .ToListAsync();
+        }
+
+        public async Task<List<Postagem>> ObterTodasPostagemEComentarios()
+        {
+            return await Db.Postagens.AsNoTracking()
+                         .Include(p => p.Autor)
+                         .Include(p => p.Comentarios)
+                         .OrderByDescending(p => p.DataCriacao)
+                         .ToListAsync();
         }
     }
 }

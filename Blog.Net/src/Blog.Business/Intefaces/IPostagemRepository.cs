@@ -13,5 +13,9 @@ namespace Blog.Business.Intefaces
 
         Task<List<Postagem>> ObterTodasPostagem();
 
+        Task<List<Postagem>> ObterTodasPostagemEComentarios();
+
+        Task<bool> ExiteTabela();
+
     }
 }

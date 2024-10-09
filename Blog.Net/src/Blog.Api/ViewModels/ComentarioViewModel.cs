@@ -23,7 +23,7 @@ namespace Blog.Api.ViewModels
 
         public Guid IdPostagem { get; set; }
 
-        public PostagemViewModel? Postagem { get; set; }
+        // public PostagemViewModel? Postagem { get; set; }
 
     }
 }
