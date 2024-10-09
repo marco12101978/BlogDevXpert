@@ -1,7 +1,8 @@
-﻿using Blog.Business.Models;
+﻿using Blog.Api.ViewModels.Comentario;
+using Blog.Business.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace Blog.Api.ViewModels
+namespace Blog.Api.ViewModels.Postagem
 {
     public class PostagemViewModel
     {

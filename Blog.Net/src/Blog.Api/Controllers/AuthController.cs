@@ -1,5 +1,5 @@
 ﻿using Blog.Api.Authentication;
-using Blog.Api.ViewModels;
+using Blog.Api.ViewModels.User;
 using Blog.Business.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

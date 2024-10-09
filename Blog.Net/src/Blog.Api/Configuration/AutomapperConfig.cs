@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
-using Blog.Api.ViewModels;
+using Blog.Api.ViewModels.Comentario;
+using Blog.Api.ViewModels.Postagem;
 using Blog.Business.Models;
 
 namespace Blog.Api.Configuration
@@ -19,7 +20,6 @@ namespace Blog.Api.Configuration
     {
         public AutomapperConfiguration()
         {
-            CreateMap<Autor, AutorViewModel>().ReverseMap();
             CreateMap<Postagem, PostagemViewModel>().ReverseMap();
             CreateMap<Comentario, ComentarioViewModel>().ReverseMap();
         }

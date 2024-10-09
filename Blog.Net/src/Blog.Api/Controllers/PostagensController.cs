@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Blog.Api.ViewModels;
+using Blog.Api.ViewModels.Postagem;
 using Blog.Business.Intefaces;
 using Blog.Business.Models;
 using Blog.Business.Services;
@@ -85,7 +85,7 @@ namespace Blog.Api.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(PostagemViewModel), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<PostagemViewModel>> Adicionar(PostagemViewModel comentario)
+        public async Task<ActionResult<PostagemViewModel>> Adicionar(PostagemInputModel postagemInputModel)
         {
             if (!await _postagemRepository.ExiteTabela())
             {
@@ -95,11 +95,22 @@ namespace Blog.Api.Controllers
 
             if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-            await CriarUsuarioSemNaoExistir();
+            await CriarUsuarioCasoNaoExistir();
 
-            await _postagemService.Adicionar(_mapper.Map<Postagem>(comentario));
+            PostagemViewModel _postagem = new PostagemViewModel
+            {
+                DataCriacao = DateTime.Now,
+                Titulo = postagemInputModel.Titulo,
+                Conteudo = postagemInputModel.Conteudo,
+                IdAutor = UserId,
+                Id = Guid.NewGuid()
+            };
 
-            return CustomResponse(HttpStatusCode.Created, comentario);
+            await _postagemService.Adicionar(_mapper.Map<Postagem>(_postagem));
+
+
+
+            return CustomResponse(HttpStatusCode.Created, _postagem);
 
         }
 
@@ -108,12 +119,10 @@ namespace Blog.Api.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> Atualizar(Guid id, PostagemViewModel comentario)
+        public async Task<IActionResult> Atualizar(Guid id, PostagemUpdateModel postagemUpdateModel)
         {
-            var xx = UserId;
-            var xxx = UserAdmin;
 
-            if (id != comentario.Id)
+            if (id != postagemUpdateModel.Id)
             {
                 NotificarErro("Os ids informados não são iguais!");
                 return CustomResponse();
@@ -128,18 +137,20 @@ namespace Blog.Api.Controllers
 
             if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-            var comentarioAtualizacao = await ObterPostagem(id);
+            var _postagemAtualizacao = await ObterPostagem(id);
 
-            if (comentarioAtualizacao == null)
+            if (_postagemAtualizacao == null)
             {
                 return NotFound();
             }
 
-            if (UserAdmin || UserId == comentario.IdAutor)
+            if (UserAdmin || UserId == _postagemAtualizacao.IdAutor)
             {
-                comentarioAtualizacao.Conteudo = comentario.Conteudo;
+                _postagemAtualizacao.Titulo = postagemUpdateModel.Titulo;
+                _postagemAtualizacao.Conteudo = postagemUpdateModel.Conteudo;
+                _postagemAtualizacao.DataAtualizacao = DateTime.Now;
 
-                await _postagemService.Atualizar(_mapper.Map<Postagem>(comentarioAtualizacao));
+                await _postagemService.Atualizar(_mapper.Map<Postagem>(_postagemAtualizacao));
 
                 return CustomResponse(HttpStatusCode.NoContent);
             }
@@ -182,8 +193,6 @@ namespace Blog.Api.Controllers
                 return CustomResponse(HttpStatusCode.Unauthorized);
             }
 
-
-
         }
 
 
@@ -196,7 +205,7 @@ namespace Blog.Api.Controllers
         }
 
 
-        private async Task CriarUsuarioSemNaoExistir()
+        private async Task CriarUsuarioCasoNaoExistir()
         {
             IEnumerable<Autor> _autor = await _autorRepository.Buscar(p => p.Id == UserId);
 

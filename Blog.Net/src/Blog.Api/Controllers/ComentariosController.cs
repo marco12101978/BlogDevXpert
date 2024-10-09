@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Blog.Api.ViewModels;
+using Blog.Api.ViewModels.Comentario;
 using Blog.Business.Intefaces;
 using Blog.Business.Models;
 using Microsoft.AspNetCore.Authorization;
