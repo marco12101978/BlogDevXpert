@@ -23,7 +23,5 @@ namespace Blog.Api.ViewModels.Comentario
 
         public Guid IdPostagem { get; set; }
 
-        // public PostagemViewModel? Postagem { get; set; }
-
     }
 }

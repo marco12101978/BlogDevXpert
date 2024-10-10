@@ -51,7 +51,7 @@ namespace Blog.Api.Controllers
             if (!await _postagemRepository.ExiteTabela())
             {
                 NotificarErro("Falha ao Obter dados favor entrar em contato com o responsavel técnico");
-                return CustomResponse(HttpStatusCode.NotFound);
+                return CustomResponse(HttpStatusCode.InternalServerError);
             }
 
             var resultado = await _postagemRepository.ObterTodasPostagemEComentarios();
@@ -69,7 +69,7 @@ namespace Blog.Api.Controllers
             if (!await _postagemRepository.ExiteTabela())
             {
                 NotificarErro("Falha ao Obter dados favor entrar em contato com o responsavel técnico");
-                return CustomResponse(HttpStatusCode.NotFound);
+                return CustomResponse(HttpStatusCode.InternalServerError);
             }
 
             var comentario = await ObterPostagem(id);
@@ -90,7 +90,7 @@ namespace Blog.Api.Controllers
             if (!await _postagemRepository.ExiteTabela())
             {
                 NotificarErro("Falha ao Inserir dados favor entrar em contato com o responsavel técnico");
-                return CustomResponse(HttpStatusCode.NotFound);
+                return CustomResponse(HttpStatusCode.InternalServerError);
             }
 
             if (!ModelState.IsValid) return CustomResponse(ModelState);
@@ -125,13 +125,13 @@ namespace Blog.Api.Controllers
             if (id != postagemUpdateModel.Id)
             {
                 NotificarErro("Os ids informados não são iguais!");
-                return CustomResponse(HttpStatusCode.OK);
+                return CustomResponse(HttpStatusCode.BadRequest);
             }
 
             if (!await _postagemRepository.ExiteTabela())
             {
                 NotificarErro("Falha ao Atualizar dados favor entrar em contato com o responsavel técnico");
-                return CustomResponse(HttpStatusCode.NotFound);
+                return CustomResponse(HttpStatusCode.InternalServerError);
             }
 
 
@@ -171,7 +171,7 @@ namespace Blog.Api.Controllers
             if (!await _postagemRepository.ExiteTabela())
             {
                 NotificarErro("Falha ao Excluir dados favor entrar em contato com o responsavel técnico");
-                return CustomResponse(HttpStatusCode.NotFound);
+                return CustomResponse(HttpStatusCode.InternalServerError);
             }
 
             var comentario = await ObterPostagem(id);
