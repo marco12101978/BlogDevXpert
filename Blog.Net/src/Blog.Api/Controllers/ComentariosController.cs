@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
-using Blog.Api.ViewModels;
 using Blog.Api.ViewModels.Comentario;
 using Blog.Business.Intefaces;
 using Blog.Business.Models;
-using Blog.Data.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -54,11 +52,7 @@ namespace Blog.Api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<List<ComentarioViewModel>>> ObterTodos()
         {
-            if (!await _comentarioRepository.ExiteTabela())
-            {
-                NotificarErro("Falha ao Obter dados favor entrar em contato com o responsavel técnico");
-                return CustomResponse(HttpStatusCode.InternalServerError);
-            }
+            if (!await VerificarTabelaComentario()) return CustomResponse(HttpStatusCode.InternalServerError);
 
             return _mapper.Map<List<ComentarioViewModel>>(await _comentarioRepository.ObterTodosComentarios());
         }
@@ -69,11 +63,7 @@ namespace Blog.Api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ComentarioViewModel>> ObterPorId(Guid id)
         {
-            if (!await _comentarioRepository.ExiteTabela())
-            {
-                NotificarErro("Falha ao Obter dados favor entrar em contato com o responsavel técnico");
-                return CustomResponse(HttpStatusCode.InternalServerError);
-            }
+            if (!await VerificarTabelaComentario()) return CustomResponse(HttpStatusCode.InternalServerError);
 
             var comentario = await ObterComentario(id);
 
@@ -90,13 +80,9 @@ namespace Blog.Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<ComentarioViewModel>> Adicionar(ComentarioInputModel comentarioInputModel)
         {
-            if (!await _comentarioRepository.ExiteTabela())
-            {
-                NotificarErro("Falha ao Inserir dados favor entrar em contato com o responsavel técnico");
-                return CustomResponse(HttpStatusCode.InternalServerError);
-            }
+            if (!await VerificarTabelaComentario()) return CustomResponse(HttpStatusCode.InternalServerError);
 
-            await CriarUsuarioSemNaoExistir();
+            await CriarAutorSeNaoExistir();
 
 
             if (!ModelState.IsValid) return CustomResponse(ModelState);
@@ -109,7 +95,8 @@ namespace Blog.Api.Controllers
                 return CustomResponse(HttpStatusCode.NotFound);
             }
 
-            ComentarioViewModel _comentario = new ComentarioViewModel
+
+            ComentarioViewModel comentario = new ComentarioViewModel
             {
                 Id = Guid.NewGuid(),
 
@@ -122,9 +109,9 @@ namespace Blog.Api.Controllers
                 DataPostagem = DateTime.Now
             };
 
-            await _comentarioRepository.Adicionar(_mapper.Map<Comentario>(_comentario));
+            await _comentarioRepository.Adicionar(_mapper.Map<Comentario>(comentario));
 
-            return CustomResponse(HttpStatusCode.Created, _comentario);
+            return CustomResponse(HttpStatusCode.Created, comentario);
 
         }
 
@@ -141,11 +128,7 @@ namespace Blog.Api.Controllers
                 return CustomResponse(HttpStatusCode.BadRequest);
             }
 
-            if (!await _comentarioRepository.ExiteTabela())
-            {
-                NotificarErro("Falha ao Atualizar dados favor entrar em contato com o responsavel técnico");
-                return CustomResponse(HttpStatusCode.InternalServerError);
-            }
+            if (!await VerificarTabelaComentario()) return CustomResponse(HttpStatusCode.InternalServerError);
 
             if (!ModelState.IsValid) return CustomResponse(ModelState);
 
@@ -157,7 +140,7 @@ namespace Blog.Api.Controllers
                 return CustomResponse(HttpStatusCode.NotFound);
             }
 
-            if (UserAdmin || UserId == comentarioAtualizacao.IdAutor)
+            if (UsuarioPodeModificar(comentarioAtualizacao))
             {
                 comentarioAtualizacao.Conteudo = comentarioUpdateModel.Conteudo;
 
@@ -180,17 +163,13 @@ namespace Blog.Api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Excluir(Guid id)
         {
-            if (!await _comentarioRepository.ExiteTabela())
-            {
-                NotificarErro("Falha ao Excluir dados favor entrar em contato com o responsavel técnico");
-                return CustomResponse(HttpStatusCode.InternalServerError);
-            }
+            if (!await VerificarTabelaComentario()) return CustomResponse(HttpStatusCode.InternalServerError);
 
             var comentario = await ObterComentario(id);
 
             if (comentario == null) return NotFound();
 
-            if (UserAdmin || UserId == comentario.IdAutor)
+            if (UsuarioPodeModificar(comentario))
             {
                 await _comentarioService.Remover(id);
 
@@ -208,12 +187,10 @@ namespace Blog.Api.Controllers
         {
             if (id == null) return null;
 
-            ComentarioViewModel comentario = _mapper.Map<ComentarioViewModel>(await _comentarioRepository.ObterComentario(id ?? Guid.Empty));
-            return comentario;
+            return _mapper.Map<ComentarioViewModel>(await _comentarioRepository.ObterComentario(id ?? Guid.Empty));
         }
 
-
-        private async Task CriarUsuarioSemNaoExistir()
+        private async Task CriarAutorSeNaoExistir()
         {
             IEnumerable<Autor> _autor = await _autorRepository.Buscar(p => p.Id == UserId);
 
@@ -230,6 +207,21 @@ namespace Blog.Api.Controllers
 
                 await _autorService.Adicionar(_insAutor);
             }
+        }
+
+        private async Task<bool> VerificarTabelaComentario()
+        {
+            if (!await _comentarioRepository.ExiteTabela())
+            {
+                NotificarErro("Falha ao processar dados. Favor entrar em contato com o suporte.");
+                return false;
+            }
+            return true;
+        }
+
+        private bool UsuarioPodeModificar(ComentarioViewModel comentario)
+        {
+            return UserAdmin || UserId == comentario.IdAutor;
         }
     }
 }

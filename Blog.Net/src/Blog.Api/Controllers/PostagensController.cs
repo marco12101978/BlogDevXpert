@@ -25,6 +25,8 @@ namespace Blog.Api.Controllers
         private readonly IAutorRepository _autorRepository;
         private readonly IAutorService _autorService;
 
+
+
         public PostagensController(IMapper mapper,
                                   IPostagemRepository repository,
                                   IPostagemService service,
@@ -48,11 +50,7 @@ namespace Blog.Api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<List<PostagemViewModel>>> ObterTodos()
         {
-            if (!await _postagemRepository.ExiteTabela())
-            {
-                NotificarErro("Falha ao Obter dados favor entrar em contato com o responsavel técnico");
-                return CustomResponse(HttpStatusCode.InternalServerError);
-            }
+            if (!await VerificarTabelaPostagem()) return CustomResponse(HttpStatusCode.InternalServerError);
 
             var resultado = await _postagemRepository.ObterTodasPostagemEComentarios();
 
@@ -66,11 +64,7 @@ namespace Blog.Api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<PostagemViewModel>> ObterPorId(Guid id)
         {
-            if (!await _postagemRepository.ExiteTabela())
-            {
-                NotificarErro("Falha ao Obter dados favor entrar em contato com o responsavel técnico");
-                return CustomResponse(HttpStatusCode.InternalServerError);
-            }
+            if (!await VerificarTabelaPostagem()) return CustomResponse(HttpStatusCode.InternalServerError);
 
             var comentario = await ObterPostagem(id);
 
@@ -87,15 +81,13 @@ namespace Blog.Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<PostagemViewModel>> Adicionar(PostagemInputModel postagemInputModel)
         {
-            if (!await _postagemRepository.ExiteTabela())
-            {
-                NotificarErro("Falha ao Inserir dados favor entrar em contato com o responsavel técnico");
-                return CustomResponse(HttpStatusCode.InternalServerError);
-            }
+            if (!await VerificarTabelaPostagem()) return CustomResponse(HttpStatusCode.InternalServerError);
 
             if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-            await CriarUsuarioCasoNaoExistir();
+            await CriarAutorSeNaoExistir();
+
+
 
             PostagemViewModel _postagem = new PostagemViewModel
             {
@@ -128,11 +120,7 @@ namespace Blog.Api.Controllers
                 return CustomResponse(HttpStatusCode.BadRequest);
             }
 
-            if (!await _postagemRepository.ExiteTabela())
-            {
-                NotificarErro("Falha ao Atualizar dados favor entrar em contato com o responsavel técnico");
-                return CustomResponse(HttpStatusCode.InternalServerError);
-            }
+            if (!await VerificarTabelaPostagem()) return CustomResponse(HttpStatusCode.InternalServerError);
 
 
             if (!ModelState.IsValid) return CustomResponse(ModelState);
@@ -144,7 +132,7 @@ namespace Blog.Api.Controllers
                 return NotFound();
             }
 
-            if (UserAdmin || UserId == _postagemAtualizacao.IdAutor)
+            if (UsuarioPodeModificar(_postagemAtualizacao))
             {
                 _postagemAtualizacao.Titulo = postagemUpdateModel.Titulo;
                 _postagemAtualizacao.Conteudo = postagemUpdateModel.Conteudo;
@@ -168,18 +156,14 @@ namespace Blog.Api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Excluir(Guid id)
         {
-            if (!await _postagemRepository.ExiteTabela())
-            {
-                NotificarErro("Falha ao Excluir dados favor entrar em contato com o responsavel técnico");
-                return CustomResponse(HttpStatusCode.InternalServerError);
-            }
+            if (!await VerificarTabelaPostagem()) return CustomResponse(HttpStatusCode.InternalServerError);
 
-            var comentario = await ObterPostagem(id);
+            var postagem = await ObterPostagem(id);
 
-            if (comentario == null) return NotFound();
+            if (postagem == null) return NotFound();
 
 
-            if (UserAdmin || UserId == comentario.IdAutor)
+            if (UsuarioPodeModificar(postagem))
             {
                 await _postagemService.Remover(id);
 
@@ -197,12 +181,11 @@ namespace Blog.Api.Controllers
         {
             if (id == null) return null;
 
-            PostagemViewModel comentario = _mapper.Map<PostagemViewModel>(await _postagemRepository.ObterPostagem(id ?? Guid.Empty));
-            return comentario;
+            return _mapper.Map<PostagemViewModel>(await _postagemRepository.ObterPostagem(id ?? Guid.Empty));
         }
 
 
-        private async Task CriarUsuarioCasoNaoExistir()
+        private async Task CriarAutorSeNaoExistir()
         {
             IEnumerable<Autor> _autor = await _autorRepository.Buscar(p => p.Id == UserId);
 
@@ -219,6 +202,21 @@ namespace Blog.Api.Controllers
 
                 await _autorService.Adicionar(_insAutor);
             }
+        }
+
+        private async Task<bool> VerificarTabelaPostagem()
+        {
+            if (!await _postagemRepository.ExiteTabela())
+            {
+                NotificarErro("Falha ao processar dados. Favor entrar em contato com o suporte.");
+                return false;
+            }
+            return true;
+        }
+
+        private bool UsuarioPodeModificar(PostagemViewModel comentario)
+        {
+            return UserAdmin || UserId == comentario.IdAutor;
         }
     }
 }
