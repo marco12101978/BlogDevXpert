@@ -92,6 +92,22 @@ namespace Blog.Api.Controllers
 
             if (!ModelState.IsValid) return CustomResponse(ModelState);
 
+
+            ComentarioViewModel xnxx = new ComentarioViewModel();
+
+            xnxx.Id = Guid.NewGuid();
+            
+            xnxx.Conteudo = comentario.Conteudo;
+
+            xnxx.IdAutor = UserId;
+            xnxx.NomeAutor = UserName;
+
+            xnxx.IdPostagem = comentario.IdPostagem;
+            xnxx.DataPostagem = DateTime.Now;
+
+
+
+
             await _comentarioRepository.Adicionar(_mapper.Map<Comentario>(comentario));
 
             return CustomResponse(HttpStatusCode.Created, comentario);
@@ -108,7 +124,7 @@ namespace Blog.Api.Controllers
             if (id != comentario.Id)
             {
                 NotificarErro("Os ids informados não são iguais!");
-                return CustomResponse();
+                return CustomResponse(HttpStatusCode.OK);
             }
 
             if (!await _comentarioRepository.ExiteTabela())
@@ -136,8 +152,7 @@ namespace Blog.Api.Controllers
             }
             else
             {
-                NotificarErro("Falha ao Excluir , sem autorização ");
-                return CustomResponse(HttpStatusCode.Unauthorized);
+                return Unauthorized();
             }
 
         }
@@ -168,8 +183,8 @@ namespace Blog.Api.Controllers
             }
             else
             {
-                NotificarErro("Falha ao Excluir , sem autorização ");
-                return CustomResponse(HttpStatusCode.Unauthorized);
+
+                return Unauthorized();
             }
         }
 

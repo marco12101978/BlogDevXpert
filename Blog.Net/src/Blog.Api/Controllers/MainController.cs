@@ -31,7 +31,7 @@ namespace Blog.Api.Controllers
             return !_notificador.TemNotificacao();
         }
 
-        protected ActionResult CustomResponse(HttpStatusCode statusCode = HttpStatusCode.OK, object result = null)
+        protected ActionResult CustomResponse(HttpStatusCode statusCode, object result = null)
         {
             if (OperacaoValida())
             {
@@ -40,17 +40,28 @@ namespace Blog.Api.Controllers
                     StatusCode = Convert.ToInt32(statusCode),
                 };
             }
-
-            return BadRequest(new
+            else
             {
-                errors = _notificador.ObterNotificacoes().Select(n => n.Mensagem)
-            });
+                return new ObjectResult(new
+                {
+                    errors = _notificador.ObterNotificacoes().Select(n => n.Mensagem)
+                })
+                {
+                    StatusCode = Convert.ToInt32(statusCode)
+                };
+            }
+
+
+            //return BadRequest(new
+            //{
+            //    errors = _notificador.ObterNotificacoes().Select(n => n.Mensagem)
+            //});
         }
 
         protected ActionResult CustomResponse(ModelStateDictionary modelState)
         {
             if (!modelState.IsValid) NotificarErroModelInvalida(modelState);
-            return CustomResponse();
+            return CustomResponse(HttpStatusCode.OK);
         }
 
         protected void NotificarErroModelInvalida(ModelStateDictionary modelState)

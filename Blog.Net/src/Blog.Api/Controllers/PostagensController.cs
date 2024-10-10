@@ -125,7 +125,7 @@ namespace Blog.Api.Controllers
             if (id != postagemUpdateModel.Id)
             {
                 NotificarErro("Os ids informados não são iguais!");
-                return CustomResponse();
+                return CustomResponse(HttpStatusCode.OK);
             }
 
             if (!await _postagemRepository.ExiteTabela())
@@ -156,10 +156,8 @@ namespace Blog.Api.Controllers
             }
             else
             {
-                NotificarErro("Falha ao Excluir , sem autorização");
-                return CustomResponse(HttpStatusCode.Unauthorized);
+                return Unauthorized();
             }
-
         }
 
 
@@ -189,8 +187,7 @@ namespace Blog.Api.Controllers
             }
             else
             {
-                NotificarErro("Falha ao Excluir , sem autorização ");
-                return CustomResponse(HttpStatusCode.Unauthorized);
+                return Unauthorized();
             }
 
         }
