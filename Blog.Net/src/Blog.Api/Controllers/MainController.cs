@@ -42,6 +42,14 @@ namespace Blog.Api.Controllers
             }
             else
             {
+                if ((int)statusCode >= 200 && (int)statusCode <= 299)
+                {
+                    return BadRequest(new
+                    {
+                        errors = _notificador.ObterNotificacoes().Select(n => n.Mensagem)
+                    });
+                }
+
                 return new ObjectResult(new
                 {
                     errors = _notificador.ObterNotificacoes().Select(n => n.Mensagem)
