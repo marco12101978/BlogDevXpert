@@ -90,14 +90,14 @@ src/
 
 3. **Executar a Aplicação MVC:**
    ```bash
-   cd src/Blog.Web/
+   cd Blog.Net/src/Blog.Web/
    dotnet run
    ```
    Acesse a aplicação em: `http://localhost:5000`
 
 4. **Executar a API:**
    ```bash
-   cd src/Blog.Api/
+   cd Blog.Net/src/Blog.Api/
    dotnet run
    ```
    Acesse a documentação da API em: `http://localhost:5001/swagger`
