@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Web.Controllers
 {
+
+    [Authorize]
     public class ComentariosController : BaseController
     {
         private readonly IMapper _mapper;
@@ -72,27 +74,12 @@ namespace Blog.Web.Controllers
             return View(comentario);
         }
 
-        [Authorize]
+
         [HttpGet]
         [Route("novo-comentario/{id:guid}")]
         public async Task<IActionResult> Create(Guid id)
         {
-            IEnumerable<Autor> _autor = await _autorRepository.Buscar(p => p.Id == UserId);
-
-            if (_autor == null || !_autor.Any())
-            {
-                var _insAutor = new Autor
-                {
-                    Email = UserName,
-                    Nome = UserName,
-                    Id = UserId,
-                    Biografia = ""
-                };
-
-
-                await _autorService.Adicionar(_insAutor);
-            }
-
+            await CriarAutorSeNaoExistir();
 
             ViewBag.idPostagem = id.ToString();
 
@@ -100,7 +87,6 @@ namespace Blog.Web.Controllers
         }
 
 
-        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("novo-comentario/{id:guid}")]
@@ -109,6 +95,8 @@ namespace Blog.Web.Controllers
             ModelState.Remove("DataPostagem");
             if (ModelState.IsValid)
             {
+                await CriarAutorSeNaoExistir();
+
                 comentario.Id = Guid.NewGuid();
                 comentario.Conteudo = comentario.Conteudo;
                 comentario.IdPostagem = comentario.IdPostagem;
@@ -130,61 +118,41 @@ namespace Blog.Web.Controllers
             return View(comentario);
         }
 
-        [Authorize]
+
         [HttpGet]
         [Route("editar-comentario/{id:guid}")]
         public async Task<IActionResult> Edit(Guid? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             ComentarioViewModel? comentario = await ObterComentario(id);
-            if (comentario == null)
-            {
-                return NotFound();
-            }
+            
+            if (comentario == null) return NotFound();
 
-            if (UserAdmin == false && UserId != comentario?.IdAutor)
-            {
-                return Unauthorized();
-            }
-
+            if (!UsuarioPodeModificar(comentario))  return Unauthorized();
 
             return View(comentario);
         }
 
-        [Authorize]
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("editar-comentario/{id:guid}")]
         public async Task<IActionResult> Edit(Guid id, [Bind("Conteudo,DataPostagem,IdAutor,IdPostagem,Id")] ComentarioViewModel comentario)
         {
-            if (id != comentario.Id)
-            {
-                return NotFound();
-            }
+            if (id != comentario.Id) return NotFound();
 
             ModelState.Remove("DataPostagem");
+
             if (ModelState.IsValid)
             {
-
                 ComentarioViewModel? _comentarioDB = await ObterComentario(id);
 
-                if (UserAdmin == false && UserId != _comentarioDB?.IdAutor)
-                {
-                    return Unauthorized();
-                }
+                if (!UsuarioPodeModificar(comentario))  return Unauthorized();
 
-
-                if (_comentarioDB == null)
-                {
-                    return NotFound();
-                }
+                if (_comentarioDB == null)  return NotFound();
 
                 _comentarioDB.Conteudo = comentario.Conteudo;
-                
 
                 await _comentarioService.Atualizar(_mapper.Map<Comentario>(_comentarioDB));
 
@@ -201,33 +169,23 @@ namespace Blog.Web.Controllers
             return View(comentario);
         }
 
-        [Authorize]
+
         [HttpGet]
         [Route("deletar-comentario/{id:guid}")]
         public async Task<IActionResult> Delete(Guid? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             ComentarioViewModel? comentario = await ObterComentario(id);
 
-            if (comentario == null)
-            {
-                return NotFound();
-            }
+            if (comentario == null)  return NotFound();
 
-            if (UserAdmin == false && UserId != comentario?.IdAutor)
-            {
-                return Unauthorized();
-            }
-
+            if (!UsuarioPodeModificar(comentario)) return Unauthorized();
 
             return View(comentario);
         }
 
-        [Authorize]
+
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Route("deletar-comentario/{id:guid}")]
@@ -235,28 +193,17 @@ namespace Blog.Web.Controllers
         {
             ComentarioViewModel? comentario = await ObterComentario(id);
 
-            if (comentario == null)
-            {
-                return NotFound();
-            }
+            if (comentario == null) return NotFound();
 
             if (comentario != null)
             {
-                if (UserAdmin == false && UserId != comentario?.IdAutor)
-                {
-                    return Unauthorized();
-                }
+                if (!UsuarioPodeModificar(comentario))  return Unauthorized();
 
                 await _comentarioService.Remover(comentario.Id);
 
+                if (!OperacaoValida()) return View(comentario);
 
-
-                if (!OperacaoValida())
-                {
-                    return View(comentario);
-                }
-
-                 return RedirectToAction("Details", "Postagem", new { id = comentario.IdPostagem });
+                return RedirectToAction("Details", "Postagem", new { id = comentario.IdPostagem });
             }
 
             return RedirectToAction("Index", "Postagem");
@@ -274,6 +221,30 @@ namespace Blog.Web.Controllers
 
             ComentarioViewModel comentario = _mapper.Map<ComentarioViewModel>(await _comentarioRepository.ObterComentario(id ?? Guid.Empty));
             return comentario;
+        }
+
+
+        private bool UsuarioPodeModificar(ComentarioViewModel comentario)
+        {
+            return UserAdmin || UserId == comentario.IdAutor;
+        }
+
+        private async Task CriarAutorSeNaoExistir()
+        {
+            IEnumerable<Autor> _autor = await _autorRepository.Buscar(p => p.Id == UserId);
+
+            if (_autor == null || !_autor.Any())
+            {
+                var _insAutor = new Autor
+                {
+                    Email = UserName,
+                    Nome = UserName,
+                    Id = UserId,
+                    Biografia = ""
+                };
+
+                await _autorService.Adicionar(_insAutor);
+            }
         }
     }
 }

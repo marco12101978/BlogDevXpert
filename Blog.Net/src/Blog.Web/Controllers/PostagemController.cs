@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Web.Controllers
 {
+    [Authorize]
     public class PostagemController : BaseController
     {
         private readonly IMapper _mapper;
@@ -16,6 +17,7 @@ namespace Blog.Web.Controllers
 
         private readonly IAutorRepository _autorRepository;
         private readonly IAutorService _autorService;
+
 
         public PostagemController(IMapper mapper,
                                   IPostagemRepository repository,
@@ -40,6 +42,7 @@ namespace Blog.Web.Controllers
         [Route("lista-de-postagem")]
         public async Task<IActionResult> Index()
         {
+            
             ViewBag.IdUser = UserId;
             ViewBag.Admin = UserAdmin;
 
@@ -66,32 +69,18 @@ namespace Blog.Web.Controllers
         }
 
 
-        [Authorize]
         [HttpGet]
         [Route("nova-postagem")]
         public async Task<IActionResult> Create()
         {
             IEnumerable<Autor> _autor = await _autorRepository.Buscar(p => p.Id == UserId);
 
-            if (_autor == null || !_autor.Any())
-            {
-                var _insAutor = new Autor
-                {
-                    Email = UserName,
-                    Nome = UserName,
-                    Id = UserId,
-                    Biografia = ""
-                };
-
-
-                await _autorService.Adicionar(_insAutor);
-            }
+            await CriarAutorSeNaoExistir();
 
             return View();
         }
 
 
-        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("nova-postagem")]
@@ -99,7 +88,8 @@ namespace Blog.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                
+                await CriarAutorSeNaoExistir();
+
                 postagemViewModel.Id = Guid.NewGuid();
                 postagemViewModel.DataCriacao = DateTime.Now;
                 postagemViewModel.IdAutor = UserId;
@@ -113,52 +103,34 @@ namespace Blog.Web.Controllers
         }
 
 
-        [Authorize]
         [HttpGet, ActionName("Edit")]
         [Route("editar-postagem/{id:guid}")]
         public async Task<IActionResult> Edit(Guid? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null)  return NotFound();
 
-            PostagemViewModel postagem = ObterPostagem(id).Result;
+            PostagemViewModel? postagem = await ObterPostagem(id);
 
-            if (UserAdmin == false && UserId != postagem.IdAutor)
-            {
-                return Unauthorized();
-            }
+            if(postagem == null) return NotFound();
 
+            if (!UsuarioPodeModificar(postagem)) return Unauthorized();
 
-            if (postagem == null)
-            {
-                return NotFound();
-            }
+            if (postagem == null) return NotFound();
+            
             return View(postagem);
         }
 
-
-        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("editar-postagem/{id:guid}")]
         public async Task<IActionResult> Edit(Guid id, [Bind("Titulo,Conteudo,DataCriacao,IdAutor,Id")] PostagemViewModel postagem)
         {
-            if (id != postagem.Id)
-            {
-                return NotFound();
-            }
+            if (id != postagem.Id)  return NotFound();
 
-            if (UserAdmin == false && UserId != postagem.IdAutor)
-            {
-                return Unauthorized();
-            }
-
+            if (!UsuarioPodeModificar(postagem)) return Unauthorized();
 
             if (ModelState.IsValid)
             {
-
                 postagem.DataAtualizacao = DateTime.Now;
                 await _postagemRepository.Atualizar(_mapper.Map<Postagem>(postagem));
 
@@ -169,23 +141,15 @@ namespace Blog.Web.Controllers
         }
 
 
-        [Authorize]
         [HttpGet, ActionName("Delete")]
         [Route("excluir-postagem/{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
             PostagemViewModel? postagem = await ObterPostagem(id);
 
-            if (postagem == null)
-            {
-                return NotFound();
-            }
+            if (postagem == null) return NotFound();
 
-            if (UserAdmin == false && UserId != postagem.IdAutor)
-            {
-                return Unauthorized();
-            }
-
+            if (!UsuarioPodeModificar(postagem)) return Unauthorized();
 
             return View(postagem); 
         }
@@ -198,16 +162,9 @@ namespace Blog.Web.Controllers
         {
             PostagemViewModel? postagem = await ObterPostagem(id);
 
-            if (postagem == null)
-            {
-                return NotFound();
-            }
+            if (postagem == null) return NotFound();
 
-            if (UserAdmin == false && UserId != postagem.IdAutor)
-            {
-                return Unauthorized();
-            }
-
+            if (!UsuarioPodeModificar(postagem)) return Unauthorized();
 
             await _postagemService.Remover(id);
 
@@ -229,6 +186,30 @@ namespace Blog.Web.Controllers
 
             var postagem = _mapper.Map<PostagemViewModel>(await _postagemRepository.ObterPostagem(Guid.Parse(id.ToString())));
             return postagem;
+        }
+
+        private bool UsuarioPodeModificar(PostagemViewModel comentario)
+        {
+            return UserAdmin || UserId == comentario.IdAutor;
+        }
+
+        private async Task CriarAutorSeNaoExistir()
+        {
+            IEnumerable<Autor> _autor = await _autorRepository.Buscar(p => p.Id == UserId);
+
+            if (_autor == null || !_autor.Any())
+            {
+                var _insAutor = new Autor
+                {
+                    Email = UserName,
+                    Nome = UserName,
+                    Id = UserId,
+                    Biografia = ""
+                };
+
+
+                await _autorService.Adicionar(_insAutor);
+            }
         }
 
     }
