@@ -1,7 +1,7 @@
 
+using Blog.Data.Configurations;
 using Blog.Data.Context;
 using Blog.Web.Configurations;
-using Blog.Web.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 

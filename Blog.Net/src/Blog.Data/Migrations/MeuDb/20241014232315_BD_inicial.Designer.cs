@@ -9,18 +9,18 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Blog.Data.Migrations
+namespace Blog.Data.Migrations.MeuDb
 {
     [DbContext(typeof(MeuDbContext))]
-    [Migration("20241001163447_initial")]
-    partial class initial
+    [Migration("20241014232315_BD_inicial")]
+    partial class BD_inicial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.8")
+                .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -61,6 +61,9 @@ namespace Blog.Data.Migrations
                     b.Property<DateTime?>("DataPostagem")
                         .IsRequired()
                         .HasColumnType("datetime");
+
+                    b.Property<Guid>("IdAutor")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("IdPostagem")
                         .HasColumnType("uniqueidentifier");

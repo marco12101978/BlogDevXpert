@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Blog.Data.Migrations
+namespace Blog.Data.Migrations.MeuDb
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class BD_inicial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -55,6 +55,7 @@ namespace Blog.Data.Migrations
                     Conteudo = table.Column<string>(type: "varchar(max)", nullable: false),
                     DataPostagem = table.Column<DateTime>(type: "datetime", nullable: false),
                     NomeAutor = table.Column<string>(type: "varchar(100)", nullable: false),
+                    IdAutor = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IdPostagem = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>

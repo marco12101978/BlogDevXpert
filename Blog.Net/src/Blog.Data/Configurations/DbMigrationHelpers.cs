@@ -1,12 +1,13 @@
 ﻿using Blog.Business.Models;
 using Blog.Data.Context;
-using Blog.Web.Data;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
-
-
-namespace Blog.Web.Configurations
+namespace Blog.Data.Configurations
 {
     public static class DbMigrationHelperExtension
     {
@@ -32,16 +33,17 @@ namespace Blog.Web.Configurations
             var context = scope.ServiceProvider.GetRequiredService<MeuDbContext>();
             var contextId = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
+
             if (env.IsDevelopment())
             {
                 await context.Database.MigrateAsync();
                 await contextId.Database.MigrateAsync();
 
-                await EnsureSeedProducts(serviceProvider,context, contextId);
+                await EnsureSeedProducts(serviceProvider, context, contextId);
             }
         }
 
-        private static async Task EnsureSeedProducts(IServiceProvider serviceProvider,MeuDbContext context, ApplicationDbContext contextId)
+        private static async Task EnsureSeedProducts(IServiceProvider serviceProvider, MeuDbContext context, ApplicationDbContext contextId)
         {
             if (contextId.Users.Any())
                 return;

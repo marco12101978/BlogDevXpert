@@ -1,5 +1,5 @@
 ﻿using Blog.Api.Authentication;
-using Blog.Api.Data;
+using Blog.Data.Context;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;

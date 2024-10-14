@@ -1,5 +1,4 @@
-﻿using Blog.Api.Data;
-using Blog.Data.Context;
+﻿using Blog.Data.Context;
 using Microsoft.EntityFrameworkCore;
 
 namespace Blog.Api.Configuration
