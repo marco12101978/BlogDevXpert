@@ -50,7 +50,7 @@ src/
 ├── Blog.Web/    - Projeto MVC
 ├── Blog.Api/    - API RESTful
 ├── Blog.Data/   - Configuração do EF Core
-├── Blog.Business/ - Modelos de Dados e Interfaces
+├── Blog.Business/ -  Lógica de negócios e interfaces
 ├── README.md    - Arquivo de Documentação do Projeto
 ├── FEEDBACK.md  - Arquivo para Consolidação dos Feedbacks
 └── .gitignore   - Arquivo de Ignoração do Git
