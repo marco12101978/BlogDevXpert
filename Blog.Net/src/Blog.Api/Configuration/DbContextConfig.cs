@@ -7,18 +7,34 @@ namespace Blog.Api.Configuration
     {
         public static WebApplicationBuilder AddDbContextConfig(this WebApplicationBuilder builder)
         {
-            builder.Services.AddDbContext<MeuDbContext>(options =>
+            if (builder.Environment.IsDevelopment())
             {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-            });
+                var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionSqLite") ?? throw new InvalidOperationException("Connection string 'DefaultConnectionSqLite' not found.");
 
-            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                builder.Services.AddDbContext<MeuDbContext>(options =>
+                    options.UseSqlite(connectionString));
+
+                builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                    options.UseSqlite(connectionString));
+
+                return builder;
+            }
+            else
             {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-            });
 
+                builder.Services.AddDbContext<MeuDbContext>(options =>
+                {
+                    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+                });
 
-            return builder;
+                builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                {
+                    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+                });
+
+                return builder;
+            }
+
         }
     }
 }

@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Blog.Data.Migrations.MeuDb
+namespace Blog.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class BD_inicial : Migration
+    public partial class DBInitial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,7 +15,7 @@ namespace Blog.Data.Migrations.MeuDb
                 name: "Autor",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Nome = table.Column<string>(type: "varchar(100)", nullable: false),
                     Email = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false),
                     Biografia = table.Column<string>(type: "varchar(1000)", nullable: true)
@@ -29,12 +29,12 @@ namespace Blog.Data.Migrations.MeuDb
                 name: "Postagem",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Titulo = table.Column<string>(type: "varchar(200)", nullable: false),
-                    Conteudo = table.Column<string>(type: "varchar(max)", nullable: false),
+                    Conteudo = table.Column<string>(type: "varchar(2000)", nullable: false),
                     DataCriacao = table.Column<DateTime>(type: "datetime", nullable: false),
-                    DataAtualizacao = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IdAutor = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    DataAtualizacao = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    IdAutor = table.Column<Guid>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -51,12 +51,12 @@ namespace Blog.Data.Migrations.MeuDb
                 name: "Comentarios",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Conteudo = table.Column<string>(type: "varchar(max)", nullable: false),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Conteudo = table.Column<string>(type: "varchar(2000)", nullable: false),
                     DataPostagem = table.Column<DateTime>(type: "datetime", nullable: false),
                     NomeAutor = table.Column<string>(type: "varchar(100)", nullable: false),
-                    IdAutor = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    IdPostagem = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    IdAutor = table.Column<Guid>(type: "TEXT", nullable: false),
+                    IdPostagem = table.Column<Guid>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {

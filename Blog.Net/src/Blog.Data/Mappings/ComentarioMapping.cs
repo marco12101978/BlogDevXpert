@@ -15,7 +15,7 @@ namespace Blog.Data.Mappings
         {
             builder.Property(c => c.Conteudo)
                    .IsRequired()
-                   .HasColumnType("varchar(max)");
+                   .HasColumnType("varchar(2000)");
 
             builder.Property(c => c.DataPostagem)
                    .IsRequired()
