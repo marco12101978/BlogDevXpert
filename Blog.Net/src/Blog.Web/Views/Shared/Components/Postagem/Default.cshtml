@@ -31,7 +31,7 @@
                 <div class="card mb-3">
                     <div class="card-body">
                         <h2 class="card-title">
-                            <a href="@Url.Action("Detalhes", "Postagem", new { id = postagem.Id })">
+                            <a href="@Url.Action("Details", "Postagem", new { id = postagem.Id })">
                                 @Html.DisplayFor(modelItem => postagem.Titulo)
                             </a>
                         </h2>
@@ -42,7 +42,7 @@
                             <p>@(postagem.Conteudo?.Length > 200 ? postagem.Conteudo.Substring(0, 200) + "..." : postagem.Conteudo)</p>
                         </div>
                         <footer class="card-footer">
-                            <a href="@Url.Action("Details", "Postagem", new { id = postagem.Id })" class="btn btn-primary">Leia Mais</a>
+                            <a href="@Url.Action("Details", "Postagem", new { id = postagem?.Id })" class="btn btn-primary">Leia Mais</a>
                             @if (userId == postagem?.IdAutor || isAdmin)
                             {
                                 <a href="@Url.Action("Edit"  , "Postagem", new { id = postagem?.Id })" class="btn btn-primary">Editar</a>
