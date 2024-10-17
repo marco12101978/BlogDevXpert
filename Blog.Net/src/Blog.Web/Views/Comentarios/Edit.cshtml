@@ -4,6 +4,8 @@
 @{
 
     ViewData["Title"] = "Editar Comentário";
+
+    var xx = Model;
 }
 
 @await Component.InvokeAsync("Summary")
@@ -25,6 +27,9 @@
 
                 <div class="form-group">
                     <input asp-for="IdPostagem" class="form-control" type="hidden" />
+                </div>
+                <div class="form-group">
+                    <input asp-for="IdAutor" class="form-control" type="hidden" />
                 </div>
 
                 <input type="hidden" asp-for="Id" />
