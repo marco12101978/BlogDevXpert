@@ -9,7 +9,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blog.Data", "src\Blog.Data\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blog.Business", "src\Blog.Business\Blog.Business.csproj", "{C2FAF4FF-7630-42ED-A08E-4AC6F48A017B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blog.Api", "src\Blog.Api\Blog.Api.csproj", "{0294F5A3-7056-4908-BD24-8E9CECED3F08}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blog.Api", "src\Blog.Api\Blog.Api.csproj", "{0294F5A3-7056-4908-BD24-8E9CECED3F08}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CB258650-A352-4422-9D0E-8FE70542DD25}"
+	ProjectSection(SolutionItems) = preProject
+		..\FEEDBACK.md = ..\FEEDBACK.md
+		..\README.md = ..\README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
