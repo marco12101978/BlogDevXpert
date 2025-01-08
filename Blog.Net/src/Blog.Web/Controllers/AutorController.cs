@@ -1,13 +1,9 @@
 ﻿using AutoMapper;
-using Blog.Business.Intefaces;
+using Blog.Business.Interfaces;
 using Blog.Business.Models;
-using Blog.Business.Services;
-using Blog.Data.Context;
-using Blog.Data.Repository;
 using Blog.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Blog.Web.Controllers
 {

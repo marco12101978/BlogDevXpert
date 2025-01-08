@@ -1,4 +1,4 @@
-﻿using Blog.Business.Intefaces;
+﻿using Blog.Business.Interfaces;
 using IdentityModel;
 using Microsoft.IdentityModel.JsonWebTokens;
 using System.Security.Claims;

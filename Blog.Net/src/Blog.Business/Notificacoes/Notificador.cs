@@ -1,9 +1,4 @@
-﻿using Blog.Business.Intefaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Blog.Business.Interfaces;
 
 namespace Blog.Business.Notificacoes
 {

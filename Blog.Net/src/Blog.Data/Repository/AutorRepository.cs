@@ -1,7 +1,6 @@
-﻿using Blog.Business.Intefaces;
+﻿using Blog.Business.Interfaces;
 using Blog.Business.Models;
 using Blog.Data.Context;
-using Microsoft.EntityFrameworkCore;
 
 namespace Blog.Data.Repository
 {

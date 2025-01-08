@@ -1,4 +1,4 @@
-﻿using Blog.Business.Intefaces;
+﻿using Blog.Business.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Web.Components

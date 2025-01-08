@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
-using Blog.Business.Intefaces;
-using Blog.Data.Repository;
+using Blog.Business.Interfaces;
 using Blog.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 

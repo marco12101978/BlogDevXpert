@@ -1,4 +1,4 @@
-﻿using Blog.Business.Intefaces;
+﻿using Blog.Business.Interfaces;
 using Blog.Business.Models;
 using Blog.Business.Notificacoes;
 using FluentValidation;

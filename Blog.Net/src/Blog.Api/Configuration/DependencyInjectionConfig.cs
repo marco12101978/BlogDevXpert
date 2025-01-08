@@ -1,5 +1,5 @@
 ﻿using Blog.Api.Authentication;
-using Blog.Business.Intefaces;
+using Blog.Business.Interfaces;
 using Blog.Business.Notificacoes;
 using Blog.Business.Services;
 using Blog.Data.Context;

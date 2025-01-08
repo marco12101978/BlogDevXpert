@@ -1,13 +1,9 @@
 ﻿using AutoMapper;
 using Blog.Api.ViewModels.Postagem;
-using Blog.Business.Intefaces;
+using Blog.Business.Interfaces;
 using Blog.Business.Models;
-using Blog.Business.Services;
-using Blog.Data.Context;
-using Blog.Data.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace Blog.Api.Controllers
